@@ -1,0 +1,22 @@
+{
+  "main": "source/engine.js",
+  "name": "black-horse",
+  "version": "0.0.1",
+  "description": "Chess engine built in NodeJS",
+  "scripts": {
+    "tests": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/redsoul/black-horse.git"
+  },
+  "jest":{
+    "testRegex":"(/specs/.*|(\\.|/)(spec))\\.jsx?$"
+  },
+  "devDependencies": {
+    "jest": "^23.1.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.10"
+  }
+}

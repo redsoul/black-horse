@@ -265,13 +265,12 @@ class SearchService {
 
     /**
      *
-     * @param _searchTime_ integer - in milli-seconds
-     * @param _depth_ integer - search depth > 0
+     * @param searchTime integer - in milli-seconds
+     * @param depth integer - search depth > 0
      * @returns {*}
      */
-    searchNextMove(_searchTime_, _depth_) {
+    searchNextMove(searchTime = this.defaultSearchTime, depth = this.maxDepth) {
         let bestMove = null;
-        let depth = _depth_ || this.maxDepth;
         let board = this.BoardService.getBoard();
         let side = board.getSide();
         let initHash = board.getHash();
@@ -280,7 +279,7 @@ class SearchService {
         let line = '';
 
         // NotationService.printBoard(board.get64Board());
-        this.searchTime = _searchTime_ * 1000 || this.defaultSearchTime;
+        this.searchTime = searchTime * 1000;
         this._resetSearch();
 
         if (configs.loggingEnabled) {

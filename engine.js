@@ -6,14 +6,14 @@ const BoardService = require('./src/services/board-service.js');
 const NotationService = require('./src/services/notation-service.js');
 const SearchService = require('./src/services/search-service.js');
 
-module.exports = (function () {
+module.exports = (() => {
     function extendMove(move) {
         const validMoves = BoardService.getPieceValidMoves(move.rowOrig, move.columnOrig);
         let isValid = false;
         const board = BoardService.getBoard();
 
         move.flag = null;
-        each(validMoves, function (validMove) {
+        each(validMoves, (validMove) => {
             if (validMove.rowDest === move.rowDest && validMove.columnDest === move.columnDest) {
                 isValid = true;
                 if (validMove.flag) {
@@ -34,6 +34,12 @@ module.exports = (function () {
         } else {
             return false;
         }
+    }
+
+    function getBoard() {
+        const board = BoardService.getBoard().toJSON();
+        board.fenString = BoardService.convertToFEN();
+        return board;
     }
 
     function makeMove(move) {
@@ -80,19 +86,13 @@ module.exports = (function () {
         return jsonObj;
     }
 
-    function getBoard() {
-        const board = BoardService.getBoard().toJSON();
-        board.fenString = BoardService.convertToFEN();
-        return board;
-    }
-
     return {
-        initBoard: BoardService.initBoard,
-        parseFEN: BoardService.parseFEN,
+        initBoard: BoardService.initBoard.bind(BoardService),
+        parseFEN: BoardService.parseFEN.bind(BoardService),
         getBoard: getBoard,
-        getPieceValidMoves: BoardService.getPieceValidMoves,
-        isCheckMate: BoardService.isCheckMate,
-        searchNextMove: SearchService.searchNextMove,
+        getPieceValidMoves: BoardService.getPieceValidMoves.bind(BoardService),
+        isCheckMate: BoardService.isCheckMate.bind(BoardService),
+        searchNextMove: SearchService.searchNextMove.bind(SearchService),
         makeMove: makeMove,
         configs: configs
     };

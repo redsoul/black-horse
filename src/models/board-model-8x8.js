@@ -96,7 +96,22 @@ module.exports = class BoardModel extends BaseBoardModel{
     }
 
     clone() {
-        return cloneDeep(this);
+        return {
+            board: cloneDeep(this.board),
+            castle: cloneDeep(this.castle),
+            pieceMaterial: cloneDeep(this.pieceMaterial),
+            pawnMaterial: cloneDeep(this.pawnMaterial),
+            capturedPieces: cloneDeep(this.capturedPieces),
+            kingPosition: cloneDeep(this.kingPosition),
+            piecesCounter: cloneDeep(this.piecesCounter),
+            hash: this.hash,
+            side: this.side,
+            enPassant: this.enPassant,
+            fiftyMoveCounter: this.fiftyMoveCounter,
+            fullmoveCounter: this.fullmoveCounter,
+            pawnList: cloneDeep(this.pawnList),
+            pieceList: cloneDeep(this.pieceList)
+        };
     }
 
     rebuild(obj) {

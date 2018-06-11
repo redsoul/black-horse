@@ -1,12 +1,12 @@
 'use strict';
 
 const each = require('lodash/each');
-const configs = require('./configurations.js');
-const BoardService = require('./services/board-service.js');
-const NotationService = require('./services/notation-service.js');
-const SearchService = require('./services/search-service.js');
+const configs = require('./src/configurations.js');
+const BoardService = require('./src/services/board-service.js');
+const NotationService = require('./src/services/notation-service.js');
+const SearchService = require('./src/services/search-service.js');
 
-module.exports = function (configurations) {
+module.exports = function () {
     function extendMove(move) {
         const validMoves = BoardService.getPieceValidMoves(move.rowOrig, move.columnOrig);
         let isValid = false;

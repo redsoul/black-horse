@@ -1,5 +1,5 @@
 const random = require('lodash/random');
-const PvTableService = require('../../source/services/pvtable-service.js');
+const PvTableService = require('../../src/services/pvtable-service.js');
 
 describe('Pvtable Service', function () {
     let pvtableService;

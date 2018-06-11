@@ -4,19 +4,37 @@
   "version": "0.0.1",
   "description": "Chess engine built in NodeJS",
   "scripts": {
-    "tests": "jest"
+    "test": "jest",
+    "lint": "gulp lint",
+    "postinstall": "node checkVersion.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/redsoul/black-horse.git"
   },
-  "jest":{
-    "testRegex":"(/specs/.*|(\\.|/)(spec))\\.jsx?$"
+  "jest": {
+    "testRegex": "(/specs/.*|(\\.|/)(spec))\\.jsx?$"
   },
+  "keywords": [
+    "chess",
+    "chess engine",
+    "minimax",
+    "alpha-beta",
+    "algebraic notation",
+    "game",
+    "artificial intelligence"
+  ],
   "devDependencies": {
+    "eslint": "^4.19.1",
+    "gulp": "^3.9.0",
+    "gulp-eslint": "^3.0.1",
     "jest": "^23.1.0"
   },
   "dependencies": {
-    "lodash": "^4.17.10"
+    "lodash": "^4.17.10",
+    "semver": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=6"
   }
 }

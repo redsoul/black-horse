@@ -1,7 +1,7 @@
 const configs = require('../configurations');
 const pad = require('lodash/pad');
 
-class NotationService {
+module.exports = class NotationService {
     
     static convertToFEN(board) {
         let indexR;
@@ -170,5 +170,3 @@ class NotationService {
         );
     }
 }
-
-module.exports = NotationService;

@@ -525,4 +525,4 @@ module.exports = class BstModel {
         }
     }
 
-}
+};

@@ -1,8 +1,8 @@
-const EvaluationService = require('../../source/services/evaluation-service.js');
-const BoardService = require('../../source/services/board-service.js');
-const SearchService = require('../../source/services/search-service.js');
-const MoveService = require('../../source/services/move-service.js');
-const configs = require('../../source/configurations');
+const EvaluationService = require('../../src/services/evaluation-service.js');
+const BoardService = require('../../src/services/board-service.js');
+const SearchService = require('../../src/services/search-service.js');
+const MoveService = require('../../src/services/move-service.js');
+const configs = require('../../src/configurations');
 
 describe('Evaluation Service', function () {
     const evaluationService = EvaluationService;

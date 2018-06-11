@@ -1,4 +1,4 @@
-const BstModel = require('../../source/models/bst-model')
+const BstModel = require('../../src/models/bst-model')
 
 describe('BST Model', function () {
     'use strict';

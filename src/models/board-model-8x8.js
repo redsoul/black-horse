@@ -183,4 +183,4 @@ module.exports = class BoardModel extends BaseBoardModel{
 
         return board;
     }
-}
+};

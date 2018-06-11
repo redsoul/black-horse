@@ -1,6 +1,6 @@
-const BoardService = require('../../source/services/board-service.js');
-const MoveService = require('../../source/services/move-service.js');
-const configs = require('../../source/configurations');
+const BoardService = require('../../src/services/board-service.js');
+const MoveService = require('../../src/services/move-service.js');
+const configs = require('../../src/configurations');
 
 describe('Move Service', function () {
     const boardService = BoardService;

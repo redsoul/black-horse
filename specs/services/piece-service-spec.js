@@ -1,6 +1,6 @@
-const BoardService = require('../../source/services/board-service.js');
-const PieceService = require('../../source/services/piece-service.js');
-const configs = require('../../source/configurations');
+const BoardService = require('../../src/services/board-service.js');
+const PieceService = require('../../src/services/piece-service.js');
+const configs = require('../../src/configurations');
 
 describe('Piece Service', function () {
     'use strict';

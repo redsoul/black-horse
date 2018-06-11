@@ -1,5 +1,5 @@
 const random = require('lodash/random');
-const CutoffService = require('../../source/services/cutoff-service.js');
+const CutoffService = require('../../src/services/cutoff-service.js');
 
 describe('Cutoff Service', function () {
     const genRandomHash = function () {

@@ -1,6 +1,6 @@
-const BoardService = require('../../source/services/board-service.js');
-const HashService = require('../../source/services/hash-service.js');
-const configs = require('../../source/configurations');
+const BoardService = require('../../src/services/board-service.js');
+const HashService = require('../../src/services/hash-service.js');
+const configs = require('../../src/configurations');
 
 describe('Hash Service', function () {
     'use strict';

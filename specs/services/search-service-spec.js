@@ -1,6 +1,6 @@
-const SearchService = require('../../source/services/search-service.js');
-const BoardService = require('../../source/services/board-service.js');
-const configs = require('../../source/configurations');
+const SearchService = require('../../src/services/search-service.js');
+const BoardService = require('../../src/services/board-service.js');
+const configs = require('../../src/configurations');
 
 fdescribe('SearchService', function () {
     'use strict';

@@ -1,5 +1,5 @@
-const NotationService = require('../../source/services/notation-service.js');
-const configs = require('../../source/configurations');
+const NotationService = require('../../src/services/notation-service.js');
+const configs = require('../../src/configurations');
 
 describe('NotationService', function () {
     'use strict';

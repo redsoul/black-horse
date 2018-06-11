@@ -1,13 +1,10 @@
 'use strict';
 
 const each = require('lodash/each');
-global.configs = require('./configurations.js');
-
+const configs = require('./configurations.js');
 const BoardService = require('./services/board-service.js');
 const NotationService = require('./services/notation-service.js');
 const SearchService = require('./services/search-service.js');
-
-const extend = require('util')._extend;
 
 module.exports = function (configurations) {
     function extendMove(move) {

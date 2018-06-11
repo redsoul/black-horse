@@ -6,7 +6,7 @@ const BoardService = require('./src/services/board-service.js');
 const NotationService = require('./src/services/notation-service.js');
 const SearchService = require('./src/services/search-service.js');
 
-module.exports = function () {
+module.exports = (function () {
     function extendMove(move) {
         const validMoves = BoardService.getPieceValidMoves(move.rowOrig, move.columnOrig);
         let isValid = false;
@@ -96,4 +96,4 @@ module.exports = function () {
         makeMove: makeMove,
         configs: configs
     };
-};
+})();

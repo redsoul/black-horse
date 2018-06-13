@@ -2,7 +2,7 @@ const BoardService = require('../../src/services/board-service.js');
 const PieceService = require('../../src/services/piece-service.js');
 const configs = require('../../src/configurations');
 
-describe('Board Mode 8x8', function () {
+describe('Board Mode 64', function () {
     let board;
 
     describe('getPieceByRowColumn function - ', function () {

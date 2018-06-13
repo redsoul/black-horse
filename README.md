@@ -204,6 +204,25 @@ BlackHorseChessEngine.makeMove({
 ### configs
 Object containing all the configurations used in the chess engine.
 
+#### Pieces codes
+ * 0 - empty
+ * 1 - White Pawn
+ * 2 - White Knight
+ * 3 - White Bishop
+ * 4 - White Rook
+ * 5 - White Queen
+ * 6 - White King
+ * 7 - Black Pawn
+ * 8 - Black Knight
+ * 9 - Black Bishop
+ * 10 - Black Rook
+ * 11 - Black Queen
+ * 12 - Black King
+
+#### Side/color codes
+ * 0 - White
+ * 1 - Black
+
 
 # Node.js version compatibility
 

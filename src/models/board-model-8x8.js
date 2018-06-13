@@ -183,19 +183,4 @@ module.exports = class BoardModel extends BaseBoardModel{
         }
         return this.board[8 - row][column - 1];
     }
-
-    get64Board() {
-        const board = times(8, function () {
-            return new Array(8);
-        });
-        let indexCol, indexRow;
-
-        for (indexRow = 8; indexRow >= 1; indexRow--) {
-            for (indexCol = 1; indexCol <= 8; indexCol++) {
-                board[8 - indexRow][indexCol - 1] = this.getPieceByRowColumn(indexRow, indexCol);
-            }
-        }
-
-        return board;
-    }
 };

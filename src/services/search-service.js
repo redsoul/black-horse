@@ -62,7 +62,7 @@ class SearchService {
             if ((this.alphaBetaEvaluations % 2000) === 0) {
                 const timeSoFar = (SearchService._now() - this.searchStart) / 1000;
 
-                if (configs.loggingEnabled && configs.logLevel >= configs.logLevels.evaluation) {
+                if (configs.loggingEnabled && configs.currentLogLevel >= configs.logLevels.evaluation) {
                     console.log('Time elapsed: ', timeSoFar);
                     console.log('Evaluations per second: ', this.alphaBetaEvaluations / timeSoFar);
                     console.log('Saved evaluations uses: ', this.EvaluationService.getEvaluatedScoresUses());
@@ -216,7 +216,7 @@ class SearchService {
             this.BoardService.rollbackMove();
 
             if (this.searchStop) {
-                if (configs.loggingEnabled && configs.logLevel >= configs.logLevels.timeout) {
+                if (configs.loggingEnabled && configs.currentLogLevel >= configs.logLevels.timeout) {
                     console.log('timeout, depth ' + currentDepth + ', ' + (movesLength - index + 1) + ' moves left');
                 }
 
@@ -316,7 +316,7 @@ class SearchService {
                 bestMove.hasOwnProperty('score') &&
                 Math.abs(bestMove.score) >= this.checkmateScore) {
 
-                if (configs.loggingEnabled && configs.logLevel >= configs.logLevels.search) {
+                if (configs.loggingEnabled && configs.currentLogLevel >= configs.logLevels.search) {
                     console.log('Checkmate move, level ' + currentDepth + ', move: ' + this.MoveService.convertToString(bestMove));
                 }
 
@@ -324,7 +324,7 @@ class SearchService {
             }
 
             if (configs.loggingEnabled) {
-                if (configs.logLevel >= configs.logLevels.search) {
+                if (configs.currentLogLevel >= configs.logLevels.search) {
                     timeSoFar = (SearchService._now() - this.searchStart) / 1000;
                     line = pad(currentDepth, 8);
                     line += pad(this.MoveService.convertToString(bestMove), 12);
@@ -342,7 +342,7 @@ class SearchService {
                     console.log(line);
                 }
 
-                if (configs.logLevel >= configs.logLevels.evaluation) {
+                if (configs.currentLogLevel >= configs.logLevels.evaluation) {
                     console.log('Evaluations so far: ', this.alphaBetaEvaluations);
                     console.log('Saved evaluations uses: ', this.EvaluationService.getEvaluatedScoresUses());
                     console.log('Saved evaluations count: ', this.EvaluationService.getEvaluatedScoresCount());
@@ -351,8 +351,8 @@ class SearchService {
             }
         }
 
-        if (configs.loggingEnabled && configs.logLevel >= configs.logLevels.search) {
-            if (configs.logLevel >= configs.logLevels.search) {
+        if (configs.loggingEnabled && configs.currentLogLevel >= configs.logLevels.search) {
+            if (configs.currentLogLevel >= configs.logLevels.search) {
                 console.log('-----------------------------');
                 line = 'Search finished';
                 line += ', Best Move: ' + this.MoveService.convertToString(bestMove);
@@ -363,7 +363,7 @@ class SearchService {
                 console.log('-----------------------------');
             }
 
-            if (configs.logLevel >= configs.logLevels.evaluation) {
+            if (configs.currentLogLevel >= configs.logLevels.evaluation) {
                 console.log('Total evaluations: ' + this.alphaBetaEvaluations);
                 console.log('Quiescence attack evaluations: ' + this.quiescenceAttackEvaluations);
                 console.log('Quiescence capture evaluations: ' + this.quiescenceCaptureEvaluations);

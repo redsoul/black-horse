@@ -23,7 +23,7 @@ describe('Engine', function () {
             });
 
         const validMoves = engine.getPieceValidMoves(2, 2);
-        console.log(validMoves);
+        // console.log(validMoves);
         expect(validMoves).
             toMatchObject(
                 [{

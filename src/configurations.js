@@ -33,6 +33,7 @@ module.exports = (function () {
         '.': pieces.empty
     };
     const logLevels = {
+        none: 1,
         search: 2,
         timeout: 3,
         evaluation: 4
@@ -42,7 +43,7 @@ module.exports = (function () {
         loggingEnabled: true,
         moveCacheEnabled: false,
         evaluationCacheEnabled: false,
-        logLevel: logLevels.search,
+        currentLogLevel: logLevels.search,
         rowChar: '12345678',
         columnChar: 'abcdefgh',
         pieceChar: '.PNBRQKpnbrqk',

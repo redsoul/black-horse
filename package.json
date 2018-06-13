@@ -2,7 +2,7 @@
   "main": "engine.js",
   "name": "black-horse",
   "version": "0.0.5",
-  "description": "Chess engine built in NodeJS",
+  "description": "Chess engine built in NodeJS using the alpha-beta algorithm",
   "scripts": {
     "test": "jest",
     "lint": "gulp lint",
@@ -13,7 +13,7 @@
     "url": "git+https://github.com/redsoul/black-horse.git"
   },
   "jest": {
-    "testRegex": "(/specs/.*|(\\.|/)(spec))\\.jsx?$"
+    "testRegex": "(/specs/.*|(\\.|/)(spec))\\.js$"
   },
   "keywords": [
     "chess",

@@ -58,7 +58,7 @@ fdescribe('SearchService', function () {
         let move;
 
         beforeEach(function () {
-            configs.logLevel = configs.logLevels.search;
+            configs.currentLogLevel = configs.logLevels.search;
             configs.moveCacheEnabled = false;
         });
 

@@ -1,9 +1,72 @@
 const configs = require('../configurations');
 const indexOf = require('lodash/indexOf');
 const cloneDeep = require('lodash/cloneDeep');
+const times = require('lodash/times');
 
 module.exports = class BaseBoardModel {
     constructor() {
+
+    }
+
+    clone() {
+        return {
+            board: cloneDeep(this.board),
+            castle: cloneDeep(this.castle),
+            pieceMaterial: cloneDeep(this.pieceMaterial),
+            pawnMaterial: cloneDeep(this.pawnMaterial),
+            capturedPieces: cloneDeep(this.capturedPieces),
+            kingPosition: cloneDeep(this.kingPosition),
+            piecesCounter: cloneDeep(this.piecesCounter),
+            hash: this.hash,
+            side: this.side,
+            enPassant: this.enPassant,
+            fiftyMoveCounter: this.fiftyMoveCounter,
+            fullmoveCounter: this.fullmoveCounter,
+            pawnList: cloneDeep(this.pawnList),
+            pieceList: cloneDeep(this.pieceList)
+        };
+    }
+
+    rebuild(obj) {
+        this.board = obj.board;
+        this.castle = obj.castle;
+        this.pieceMaterial = obj.pieceMaterial;
+        this.pawnMaterial = obj.pawnMaterial;
+        this.capturedPieces = obj.capturedPieces;
+        this.kingPosition = obj.kingPosition;
+        this.piecesCounter = obj.piecesCounter;
+        this.hash = obj.hash;
+        this.side = obj.side;
+        this.enPassant = obj.enPassant;
+        this.fiftyMoveCounter = obj.fiftyMoveCounter;
+        this.fullmoveCounter = obj.fullmoveCounter;
+
+        this.pawnList = [];
+        this.pieceList = [];
+
+        if (typeof obj.pawnList[0] === 'object' &&
+            typeof obj.pawnList[1] === 'object' &&
+            typeof obj.pieceList[0] === 'object' &&
+            typeof obj.pieceList[1] === 'object'
+        ) {
+            this.pawnList[0] = obj.pawnList[0].clone();
+            this.pawnList[1] = obj.pawnList[1].clone();
+            this.pieceList[0] = obj.pieceList[0].clone();
+            this.pieceList[1] = obj.pieceList[1].clone();
+        } else {
+            this.pawnList[configs.colors.black] = new ListModel();
+            this.pawnList[configs.colors.white] = new ListModel();
+            this.pieceList[configs.colors.black] = new ListModel();
+            this.pieceList[configs.colors.white] = new ListModel();
+
+            this.pawnList[configs.colors.black].rebuild(obj.pawnList[0]);
+            this.pawnList[configs.colors.white].rebuild(obj.pawnList[1]);
+            this.pieceList[configs.colors.black].rebuild(obj.pieceList[0]);
+            this.pieceList[configs.colors.white].rebuild(obj.pieceList[1]);
+        }
+    }
+
+    getPieceByRowColumn(row, col) {
 
     }
 
@@ -96,6 +159,22 @@ module.exports = class BaseBoardModel {
 
     setHash(_hash) {
         this.hash = _hash;
+    }
+
+    get64Board() {
+        const board = times(8, function () {
+            return new Array(8);
+        });
+        let indexCol;
+        let indexRow;
+
+        for (indexRow = 8; indexRow >= 1; indexRow--) {
+            for (indexCol = 1; indexCol <= 8; indexCol++) {
+                board[8 - indexRow][indexCol - 1] = this.getPieceByRowColumn(indexRow, indexCol);
+            }
+        }
+
+        return board;
     }
 
     getPieceColour() {

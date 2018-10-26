@@ -79,11 +79,14 @@ module.exports = (() => {
                     jsonObj.isCheckMate = true;
                     jsonObj.ckeckMateWinSide = boardModel.getSide();
                 }
-                BoardService.switchSide();
             }
 
         }
         return jsonObj;
+    }
+
+    function getPieceSide(row, column) {
+        return BoardService.getBoard().getPieceColour(row, column);
     }
 
     return {
@@ -94,6 +97,7 @@ module.exports = (() => {
         isCheckMate: BoardService.isCheckMate.bind(BoardService),
         searchNextMove: SearchService.searchNextMove.bind(SearchService),
         makeMove: makeMove,
+        getPieceSide: getPieceSide,
         configs: configs
     };
 })();

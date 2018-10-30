@@ -19,7 +19,8 @@ class SearchService {
         this.CutoffService = CutoffService;
         this.NotationService = NotationService;
 
-        this.defaultSearchTime = 1000; //1 second
+        //in seconds
+        this.defaultSearchTime = 1;
         this.maxDepth = 20;
         this.maxQuiescenceDepth = 5;
         this.maxDepthReached = 0;
@@ -265,7 +266,7 @@ class SearchService {
 
     /**
      *
-     * @param searchTime integer - in milli-seconds
+     * @param searchTime integer - in seconds
      * @param depth integer - search depth > 0
      * @returns {*}
      */

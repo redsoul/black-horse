@@ -2,21 +2,13 @@ const SearchService = require('../../src/services/search-service.js');
 const BoardService = require('../../src/services/board-service.js');
 const configs = require('../../src/configurations');
 
-fdescribe('SearchService', function () {
+describe('SearchService', function () {
     'use strict';
 
     const searchService = SearchService;
     const boardService = BoardService;
     const searchTime = 1;
     const searchDepth = 2;
-
-    function compareMoves(move1, move2) {
-        for (let property in move2) {
-            if (move1.hasOwnProperty(property)) {
-                expect(move1[property]).toEqual(move2[property]);
-            }
-        }
-    }
 
     configs.loggingEnabled = false;
 
@@ -29,7 +21,7 @@ fdescribe('SearchService', function () {
             let move;
             expect(boardService.getBoard().getSide()).toBe(configs.colors.white);
             expect(boardService.getBoard().getFullMoveCounter()).toBe(0);
-            move = searchService.searchNextMove(10000, 5);
+            move = searchService.searchNextMove(10, 5);
             expect(boardService.getBoard().getFullMoveCounter()).toBe(0);
             expect(move.piece).toEqual(1);
             expect(move.rowOrig).toEqual(2);

@@ -1,5 +1,6 @@
 const configs = require('../configurations');
 const pad = require('lodash/pad');
+const LoggerService = require('./logger-service.js');
 
 module.exports = class NotationService {
     
@@ -87,22 +88,22 @@ module.exports = class NotationService {
         let piece;
         let line;
 
-        console.log('\nGame Board:\n');
+        LoggerService.log('\nGame Board:\n');
         for (row = 0; row <= 7; row += 1) {
             line = (configs.rowChar[7 - row] + '  ');
             for (column = 0; column <= 7; column += 1) {
                 piece = board[row][column];
                 line += (' ' + configs.pieceChar[piece] + ' ');
             }
-            console.log(line);
+            LoggerService.log(line);
         }
 
-        console.log('');
+        LoggerService.log('');
         line = '   ';
         for (column = 1; column <= 8; column += 1) {
             line += (' ' + configs.columnChar[column - 1] + ' ');
         }
-        console.log(line);
+        LoggerService.log(line);
     }
 
     static algebraicNotation(pieceOrig, pieceDest, move, moveFlags) {
@@ -149,21 +150,21 @@ module.exports = class NotationService {
         let movesLength;
         let index;
 
-        console.log(
+        LoggerService.log(
             pad('Orig', 12) +
             pad('Dest', 12) +
             pad('Score', 8) +
             pad('Flag', 8)
         );
-        console.log(pad('', 32, '-'));
+        LoggerService.log(pad('', 32, '-'));
         for (index = 0, movesLength = moves.length; index < movesLength; index += 1) {
             NotationService.printMove(moves[index]);
         }
-        console.log(pad('', 32, '-'));
+        LoggerService.log(pad('', 32, '-'));
     }
 
     static printMove(move) {
-        console.log(
+        LoggerService.log(
             pad(move.rowOrig + ', ' + move.columnOrig, 12) +
             pad(move.rowDest + ', ' + move.columnDest, 12) +
             pad(move.score, 8) + pad(move.flag, 8)

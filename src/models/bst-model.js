@@ -1,3 +1,5 @@
+const LoggerService = require('../services/logger-service.js');
+
 /*
  * Class: BST
  *
@@ -449,7 +451,7 @@ module.exports = class BstModel {
             };
 
             res = this._inOrderNodeTraversal(this._root, callback);
-            console.log(line);
+            LoggerService.log(line);
 
             return res;
         } else {

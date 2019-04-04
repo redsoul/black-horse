@@ -4,6 +4,7 @@ const times  = require( 'lodash/times');
 const cloneDeep  = require( 'lodash/cloneDeep');
 const isUndefined  = require( 'lodash/isUndefined');
 const configs  = require('../configurations');
+const LoggerService = require('../services/logger-service.js');
 
 module.exports = class BoardModel extends BaseBoardModel{
 
@@ -159,7 +160,7 @@ module.exports = class BoardModel extends BaseBoardModel{
 
         if (isUndefined(callback)) {
             callback = function (row, columm, piece) {
-                console.log('(' + row + ', ' + columm + ') = ' + piece);
+                LoggerService.log('(' + row + ', ' + columm + ') = ' + piece);
             };
         }
 

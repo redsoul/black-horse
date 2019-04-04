@@ -5,6 +5,7 @@ const PvTableService = require('./pvtable-service.js');
 const MoveService = require('./move-service.js');
 const CutoffService = require('./cutoff-service.js');
 const NotationService = require('./notation-service.js');
+const LoggerService = require('./logger-service.js');
 
 const configs = require('../configurations');
 const pad = require('lodash/pad');
@@ -63,13 +64,11 @@ class SearchService {
             if ((this.alphaBetaEvaluations % 2000) === 0) {
                 const timeSoFar = (SearchService._now() - this.searchStart) / 1000;
 
-                if (configs.loggingEnabled && configs.currentLogLevel >= configs.logLevels.evaluation) {
-                    console.log('Time elapsed: ', timeSoFar);
-                    console.log('Evaluations per second: ', this.alphaBetaEvaluations / timeSoFar);
-                    console.log('Saved evaluations uses: ', this.EvaluationService.getEvaluatedScoresUses());
-                    console.log('Saved evaluations count: ', this.EvaluationService.getEvaluatedScoresCount());
-                    console.log('-----------------------------');
-                }
+                LoggerService.log(`Time elapsed: ${timeSoFar}`, configs.logLevels.evaluation);
+                LoggerService.log(`Evaluations per second: ${this.alphaBetaEvaluations / timeSoFar}`, configs.logLevels.evaluation);
+                LoggerService.log(`Saved evaluations uses: ${this.EvaluationService.getEvaluatedScoresUses()}`, configs.logLevels.evaluation);
+                LoggerService.log(`Saved evaluations count: ${this.EvaluationService.getEvaluatedScoresCount()}`, configs.logLevels.evaluation);
+                LoggerService.log('-----------------------------', configs.logLevels.evaluation);
             }
         }
     }
@@ -217,9 +216,7 @@ class SearchService {
             this.BoardService.rollbackMove();
 
             if (this.searchStop) {
-                if (configs.loggingEnabled && configs.currentLogLevel >= configs.logLevels.timeout) {
-                    console.log('timeout, depth ' + currentDepth + ', ' + (movesLength - index + 1) + ' moves left');
-                }
+                LoggerService.log(`timeout, depth ${currentDepth}, ${movesLength - index + 1}  ${moves} left`, configs.logLevels.timeout);
 
                 return false;
             }
@@ -283,16 +280,14 @@ class SearchService {
         this.searchTime = searchTime * 1000;
         this._resetSearch();
 
-        if (configs.loggingEnabled) {
-            console.log(
-                pad('Depth', 8) +
-                pad('Best move', 12) +
-                pad('Score', 8) +
-                pad('Nodes', 8) +
-                pad('Time elapsed', 15) +
-                pad('Ordering', 8)
-            );
-        }
+        LoggerService.log(
+            pad('Depth', 8) +
+            pad('Best move', 12) +
+            pad('Score', 8) +
+            pad('Nodes', 8) +
+            pad('Time elapsed', 15) +
+            pad('Ordering', 8)
+        );
 
         // iterative deepening
         for (currentDepth = 1; currentDepth <= depth; currentDepth += 1) {
@@ -317,60 +312,45 @@ class SearchService {
                 bestMove.hasOwnProperty('score') &&
                 Math.abs(bestMove.score) >= this.checkmateScore) {
 
-                if (configs.loggingEnabled && configs.currentLogLevel >= configs.logLevels.search) {
-                    console.log('Checkmate move, level ' + currentDepth + ', move: ' + this.MoveService.convertToString(bestMove));
-                }
-
+                LoggerService.log(`Checkmate move, level ${currentDepth}, move: ${this.MoveService.convertToString(bestMove)}`, configs.logLevels.search);
                 break;
             }
 
-            if (configs.loggingEnabled) {
-                if (configs.currentLogLevel >= configs.logLevels.search) {
-                    timeSoFar = (SearchService._now() - this.searchStart) / 1000;
-                    line = pad(currentDepth, 8);
-                    line += pad(this.MoveService.convertToString(bestMove), 12);
-                    line += pad(bestMove.score, 8);
-                    line += pad(this.searchNodes, 8);
-                    line += pad(timeSoFar, 15);
+            timeSoFar = (SearchService._now() - this.searchStart) / 1000;
+            line = pad(currentDepth, 8);
+            line += pad(this.MoveService.convertToString(bestMove), 12);
+            line += pad(bestMove.score, 8);
+            line += pad(this.searchNodes, 8);
+            line += pad(timeSoFar, 15);
 
-                    if (currentDepth > 1) {
-                        line += pad((this.failHighFirst / this.failHigh * 100).toFixed(2) + '%', 8);
-                    }
-                    else {
-                        line += '-';
-                    }
-
-                    console.log(line);
-                }
-
-                if (configs.currentLogLevel >= configs.logLevels.evaluation) {
-                    console.log('Evaluations so far: ', this.alphaBetaEvaluations);
-                    console.log('Saved evaluations uses: ', this.EvaluationService.getEvaluatedScoresUses());
-                    console.log('Saved evaluations count: ', this.EvaluationService.getEvaluatedScoresCount());
-                    console.log('-----------------------------');
-                }
+            if (currentDepth > 1) {
+                line += pad((this.failHighFirst / this.failHigh * 100).toFixed(2) + '%', 8);
             }
+            else {
+                line += '-';
+            }
+
+            LoggerService.log(line, configs.logLevels.search);
+
+            LoggerService.log(`Evaluations so far: ${this.alphaBetaEvaluations}`, configs.logLevels.evaluation);
+            LoggerService.log(`Saved evaluations uses: ${this.EvaluationService.getEvaluatedScoresUses()}`, configs.logLevels.evaluation);
+            LoggerService.log(`Saved evaluations count: ${this.EvaluationService.getEvaluatedScoresCount()}`, configs.logLevels.evaluation);
+            LoggerService.log(`-----------------------------`, configs.logLevels.evaluation);
         }
 
-        if (configs.loggingEnabled && configs.currentLogLevel >= configs.logLevels.search) {
-            if (configs.currentLogLevel >= configs.logLevels.search) {
-                console.log('-----------------------------');
-                line = 'Search finished';
-                line += ', Best Move: ' + this.MoveService.convertToString(bestMove);
-                line += ', Max Depth reached: ' + this.maxDepthReached;
-                line += ', Time: ' + (SearchService._now() - this.searchStart) / 1000;
-                line += ', Nodes: ' + this.searchNodes;
-                console.log(line);
-                console.log('-----------------------------');
-            }
+        LoggerService.log('-----------------------------', configs.logLevels.search);
+        line = 'Search finished';
+        line += ', Best Move: ' + this.MoveService.convertToString(bestMove);
+        line += ', Max Depth reached: ' + this.maxDepthReached;
+        line += ', Time: ' + (SearchService._now() - this.searchStart) / 1000;
+        line += ', Nodes: ' + this.searchNodes;
+        LoggerService.log(line, configs.logLevels.search);
+        LoggerService.log('-----------------------------', configs.logLevels.search);
 
-            if (configs.currentLogLevel >= configs.logLevels.evaluation) {
-                console.log('Total evaluations: ' + this.alphaBetaEvaluations);
-                console.log('Quiescence attack evaluations: ' + this.quiescenceAttackEvaluations);
-                console.log('Quiescence capture evaluations: ' + this.quiescenceCaptureEvaluations);
-                console.log('-----------------------------');
-            }
-        }
+        LoggerService.log(`Total evaluations: ${this.alphaBetaEvaluations}`, configs.logLevels.evaluation);
+        LoggerService.log(`Quiescence attack evaluations: ${this.quiescenceAttackEvaluations}`, configs.logLevels.evaluation);
+        LoggerService.log(`Quiescence capture evaluations: ${this.quiescenceCaptureEvaluations}`, configs.logLevels.evaluation);
+        LoggerService.log(`-----------------------------`, configs.logLevels.evaluation);
 
         return bestMove;
     }

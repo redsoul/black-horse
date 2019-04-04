@@ -44,6 +44,7 @@ module.exports = (function () {
         moveCacheEnabled: false,
         evaluationCacheEnabled: false,
         currentLogLevel: logLevels.search,
+        logStrategy: 'toConsole',
         rowChar: '12345678',
         columnChar: 'abcdefgh',
         pieceChar: '.PNBRQKpnbrqk',

@@ -255,7 +255,6 @@ describe('Evaluation Service', function () {
             boardService.initBoard();
 
             searchService.searchNextMove(searchTime, 2);
-            //console.log(boardService.convertToFEN());
             expect(evaluationService.getEvaluatedScoresCount()).toBe(40);
             expect(evaluationService.getEvaluatedScoresUses()).toBe(0);
             expect(moveService.getGeneratedMovesCount()).toBe(82);

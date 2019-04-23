@@ -2,6 +2,7 @@ const configs = require('../configurations');
 const indexOf = require('lodash/indexOf');
 const cloneDeep = require('lodash/cloneDeep');
 const times = require('lodash/times');
+const ListModel = require('./list-model');
 
 module.exports = class BaseBoardModel {
     constructor() {
@@ -66,7 +67,7 @@ module.exports = class BaseBoardModel {
         }
     }
 
-    getPieceByRowColumn(row, col) {
+    getPieceByRowColumn(row, col) { // eslint-disable-line no-unused-vars
 
     }
 

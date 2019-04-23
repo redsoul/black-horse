@@ -3,21 +3,21 @@ const { appendFile } = require('fs');
 
 class LogStrategy {
     static noDate(timestamp, message) {
-        console.log(message);
+        console.log(message); // eslint-disable-line no-console
     }
 
     static toFile(timestamp, message) {
-        var fileName = path.join(__dirname, 'logs.txt');
+        let fileName = process.cwd() + '/logs/logs.txt';
         appendFile(fileName, `${timestamp} - ${message} \n`, error => {
             if (error) {
-                console.log('Error writing to file');
-                console.error(error);
+                console.log('Error writing to file'); // eslint-disable-line no-console
+                console.error(error); // eslint-disable-line no-console
             }
         });
     }
 
     static toConsole(timestamp, message) {
-        console.log(`${timestamp} - ${message}`);
+        console.log(`${timestamp} - ${message}`); // eslint-disable-line no-console
     }
 
     static none() {
@@ -29,14 +29,20 @@ class LoggerService {
     constructor(logLevel, logStrategy) {
         this.logLevel = logLevel;
         this.logs = [];
-        this.stategy = LogStrategy[logStrategy];
+        this.changeStrategy(logStrategy);
     }
 
     changeStrategy(newStrategy) {
-        this.stategy = LogStrategy[newStrategy];
+        if (typeof LogStrategy[newStrategy] === "function") {
+            this.stategy = LogStrategy[newStrategy];
+        }
+
+        if (!this.stategy) {
+            this.stategy = LogStrategy['noDate'];
+        }
     }
 
-    log(message, logLevel=0) {
+    log(message, logLevel = 0) {
         if (configs.loggingEnabled && configs.currentLogLevel >= logLevel) {
             const timestamp = new Date().toISOString();
             this.stategy(timestamp, message);

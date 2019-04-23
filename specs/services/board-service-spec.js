@@ -267,8 +267,6 @@ describe('BoardService', function () {
 
         test('FEN 12 - piece movement while king is in check', function () {
             boardService.parseFEN('r1bqkb1r/ppp2ppp/5n2/3P4/3p4/2NB4/PPPPQPPP/R1B1K2R b KQkq - 0 1');
-            //console.log(boardService.getBoard().getKingPosition(configs.colors.black));
-            //console.log(boardService.getBoard().getKingPosition(configs.colors.white));
             expect(boardService.isPieceAttacked(8, 5)).toBeTruthy();
             expect(boardService.makeMoveXY(8, 4, 5, 4)).toBeFalsy();
         });

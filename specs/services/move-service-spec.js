@@ -347,6 +347,26 @@ describe('Move Service', function () {
             ]);
         });
 
+        test('en passant move black', function () {
+            boardService.parseFEN('8/1R6/8/5pPp/5K1k/5P2/8/8 w - h6 0 43');
+            moveService.setBoardModel(boardService.getBoard());
+
+            expect(moveService._pawnMoves(5, 7)).toEqual([
+                [6, 7],
+                [6, 8, configs.flags.enPassant]
+            ]);
+        });
+
+        test('en passant move white', function () {
+            boardService.parseFEN('8/k/8/5pP1/8/8/K/8 b - g4 0 43');
+            moveService.setBoardModel(boardService.getBoard());
+
+            expect(moveService._pawnMoves(5, 6)).toEqual([
+                [4, 6],
+                [4, 7, configs.flags.enPassant]
+            ]);
+        });
+
         test('double en passant move', function () {
             boardService.parseFEN('2r3k1/1q1nbppp/r3p3/3pP3/p1pP4/P1Q2N2/1PRN1PPP/2R4K b - - 0 1');
             moveService.setBoardModel(boardService.getBoard());

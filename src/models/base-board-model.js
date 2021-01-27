@@ -191,7 +191,6 @@ module.exports = class BaseBoardModel {
 
     addLostPiece() {
         const piece = (arguments.length === 1) ? arguments[0] : this.getPieceByRowColumn(arguments[0], arguments[1]);
-
         this.capturedPieces[this.getPieceColour(piece)].push(piece);
     }
 

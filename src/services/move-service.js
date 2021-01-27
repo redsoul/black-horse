@@ -128,9 +128,9 @@ class MoveService {
         //en passant move
         enPassantPosition = this.boardModel.getEnPassantPosition();
         if (enPassantPosition) {
-            if (row === enPassantPosition[0] && column - 1 === enPassantPosition[1]) {
+            if (row + side === enPassantPosition[0] && column - 1 === enPassantPosition[1]) {
                 moves.push([row + side, column - 1, configs.flags.enPassant]);
-            } else if (row === enPassantPosition[0] && column + 1 === enPassantPosition[1]) {
+            } else if (row + side === enPassantPosition[0] && column + 1 === enPassantPosition[1]) {
                 moves.push([row + side, column + 1, configs.flags.enPassant]);
             }
         }

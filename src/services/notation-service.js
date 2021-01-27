@@ -8,7 +8,6 @@ module.exports = class NotationService {
         let indexR;
         let indexC;
         let piece;
-        let side;
         let emptyCount;
         let fenStr = '';
         let board64;
@@ -72,8 +71,7 @@ module.exports = class NotationService {
         if (enPassantPosition === false) {
             fenStr += '- ';
         } else {
-            side = (enPassantPosition[0] > 4) ? -1 : 1;
-            fenStr += configs.columnChar[enPassantPosition[1] - 1] + (enPassantPosition[0] - 1 * side) + ' ';
+            fenStr += configs.columnChar[enPassantPosition[1] - 1] + enPassantPosition[0] + ' ';
         }
 
         fenStr += board.getFiftyMoveCounter() + ' ';

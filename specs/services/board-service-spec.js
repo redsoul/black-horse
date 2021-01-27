@@ -38,7 +38,7 @@ describe('BoardService', function () {
             boardService.parseFEN('2r3k1/1q1nbppp/r3p3/3pP3/pPpP4/P1Q2N2/2RN1PPP/2R4K b - b3 0 1');
             const enPas = boardService.getBoard().getEnPassantPosition();
 
-            expect(enPas[0]).toBe(4);
+            expect(enPas[0]).toBe(3);
             expect(enPas[1]).toBe(2);
         });
 
@@ -46,7 +46,7 @@ describe('BoardService', function () {
             boardService.parseFEN('8/6bb/8/8/R1pP2k1/4P3/P7/K7 b - d3 0 1');
             const enPas = boardService.getBoard().getEnPassantPosition();
 
-            expect(enPas[0]).toBe(4);
+            expect(enPas[0]).toBe(3);
             expect(enPas[1]).toBe(4);
         });
 

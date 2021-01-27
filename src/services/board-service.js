@@ -45,7 +45,6 @@ class BoardService {
         let row = 8;
         let count;
         let index;
-        let currentPiece;
         let castleFlags;
         let fenLength;
 
@@ -85,15 +84,13 @@ class BoardService {
                 }
 
                 this.boardModel.setPieceByRowColumn(row, column, piece);
-                currentPiece = this.boardModel.getPieceByRowColumn(row, column);
-
                 if (piece !== configs.pieces.empty) {
                     this.boardModel.incrementPieceCounter(piece);
-                    this._updateMaterial(currentPiece, true);
-                    this._addToPieceList(currentPiece, row, column);
+                    this._updateMaterial(piece, true);
+                    this._addToPieceList(piece, row, column);
 
                     if (piece === configs.pieces.wP || piece === configs.pieces.bP) {
-                        this._updatePawnList(currentPiece, row, column);
+                        this._updatePawnList(piece, row, column);
                     }
                 }
 
@@ -135,7 +132,7 @@ class BoardService {
 
         //en passant
         if (fen[fenCnt] !== '-') {
-            this.boardModel.setEnPassantPosition(parseInt(fen[fenCnt + 1]) + 1, configs.columnChar.indexOf(fen[fenCnt]) + 1);
+            this.boardModel.setEnPassantPosition(parseInt(fen[fenCnt + 1]), configs.columnChar.indexOf(fen[fenCnt]) + 1);
             fenCnt += 3;
         } else {
             fenCnt += 2;
@@ -373,6 +370,7 @@ class BoardService {
         let kingPosition;
         let enPassantPiece;
         let enPassantPosition;
+        let side;
         const flagsObj = {
             enPassant: false,
             castle: false
@@ -385,6 +383,7 @@ class BoardService {
         pieceOrig = move.piece;
         pieceDest = move.pieceDest;
         pieceSide = move.side;
+        side = (pieceSide === configs.colors.white ? 1 : -1);
 
         if (pieceOrig === configs.pieces.empty ||
             pieceOrig === configs.pieces.offBoard ||
@@ -400,16 +399,17 @@ class BoardService {
         //add en passant pawn to capture list
         enPassantPosition = this.boardModel.getEnPassantPosition();
         if (move.flag === configs.flags.enPassant && enPassantPosition) {
-            enPassantPiece = this.boardModel.getPieceByRowColumn(enPassantPosition[0], enPassantPosition[1]);
+            const enPassantPiecePos = [enPassantPosition[0] - side , enPassantPosition[1]];
+            enPassantPiece = this.boardModel.getPieceByRowColumn(enPassantPiecePos[0], enPassantPiecePos[1]);
             this.boardModel.decrementPieceCounter(enPassantPiece);
-            this.boardModel.addLostPiece(enPassantPosition[0], enPassantPosition[1]);
+            this.boardModel.addLostPiece(enPassantPiecePos[0], enPassantPiecePos[1]);
             this._updateMaterial(enPassantPiece, false);
-            this._updatePawnList(enPassantPiece, enPassantPosition[0], enPassantPosition[1], true);
+            this._updatePawnList(enPassantPiece, enPassantPiecePos[0], enPassantPiecePos[1], true);
 
-            this._hashPiece(enPassantPiece, enPassantPosition[0], enPassantPosition[1]);
-            this._removeFromPieceList(enPassantPosition[0], enPassantPosition[1]);
+            this._hashPiece(enPassantPiece, enPassantPiecePos[0], enPassantPiecePos[1]);
+            this._removeFromPieceList(enPassantPiecePos[0], enPassantPiecePos[1]);
 
-            this.boardModel.setPieceByRowColumn(enPassantPosition[0], enPassantPosition[1], configs.pieces.empty);
+            this.boardModel.setPieceByRowColumn(enPassantPiecePos[0], enPassantPiecePos[1], configs.pieces.empty);
 
             flagsObj.enPassant = true;
         }
@@ -432,7 +432,10 @@ class BoardService {
         //detect en passant move
         if ((pieceOrig === configs.pieces.bP && move.rowDest === 5 && move.rowOrig === 7) ||
             (pieceOrig === configs.pieces.wP && move.rowDest === 4 && move.rowOrig === 2)) {
-            this.boardModel.setEnPassantPosition(move.rowDest, move.columnDest);
+            this.boardModel.setEnPassantPosition(
+                move.rowDest - side, 
+                move.columnDest
+            );
         }
         else {
             this.boardModel.setEnPassantPosition();

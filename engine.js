@@ -91,6 +91,7 @@ module.exports = (() => {
 
     return {
         initBoard: BoardService.initBoard.bind(BoardService),
+        printBoard: BoardService.printBoard.bind(BoardService),
         parseFEN: BoardService.parseFEN.bind(BoardService),
         getBoard: getBoard,
         getPieceValidMoves: BoardService.getPieceValidMoves.bind(BoardService),

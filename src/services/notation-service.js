@@ -8,7 +8,6 @@ module.exports = class NotationService {
         let indexR;
         let indexC;
         let piece;
-        let side;
         let emptyCount;
         let fenStr = '';
         let board64;

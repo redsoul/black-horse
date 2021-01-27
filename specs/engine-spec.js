@@ -5,6 +5,7 @@ describe('Engine', function () {
     test('check exposed methods', () => {
         expect(keys(engine)).toEqual([
             "initBoard",
+            "printBoard",
             "parseFEN",
             "getBoard",
             "getPieceValidMoves",

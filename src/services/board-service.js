@@ -45,7 +45,6 @@ class BoardService {
         let row = 8;
         let count;
         let index;
-        let currentPiece;
         let castleFlags;
         let fenLength;
 
@@ -371,6 +370,7 @@ class BoardService {
         let kingPosition;
         let enPassantPiece;
         let enPassantPosition;
+        let side;
         const flagsObj = {
             enPassant: false,
             castle: false
@@ -383,6 +383,7 @@ class BoardService {
         pieceOrig = move.piece;
         pieceDest = move.pieceDest;
         pieceSide = move.side;
+        side = (pieceSide === configs.colors.white ? 1 : -1);
 
         if (pieceOrig === configs.pieces.empty ||
             pieceOrig === configs.pieces.offBoard ||
@@ -398,7 +399,7 @@ class BoardService {
         //add en passant pawn to capture list
         enPassantPosition = this.boardModel.getEnPassantPosition();
         if (move.flag === configs.flags.enPassant && enPassantPosition) {
-            const enPassantPiecePos = [enPassantPosition[0] + pieceSide , enPassantPosition[1]];
+            const enPassantPiecePos = [enPassantPosition[0] - side , enPassantPosition[1]];
             enPassantPiece = this.boardModel.getPieceByRowColumn(enPassantPiecePos[0], enPassantPiecePos[1]);
             this.boardModel.decrementPieceCounter(enPassantPiece);
             this.boardModel.addLostPiece(enPassantPiecePos[0], enPassantPiecePos[1]);
@@ -432,7 +433,7 @@ class BoardService {
         if ((pieceOrig === configs.pieces.bP && move.rowDest === 5 && move.rowOrig === 7) ||
             (pieceOrig === configs.pieces.wP && move.rowDest === 4 && move.rowOrig === 2)) {
             this.boardModel.setEnPassantPosition(
-                move.rowDest - (pieceSide === configs.colors.white ? 1 : -1), 
+                move.rowDest - side, 
                 move.columnDest
             );
         }

@@ -1,4 +1,5 @@
 const HashService = require('./hash-service.js');
+const CacheService = require('./cache-service.js');
 const MvvLvaService = require('./mvv-lva-service');
 const cloneDeep = require('lodash/cloneDeep');
 const isUndefined = require('lodash/isUndefined');
@@ -475,17 +476,21 @@ class MoveService {
     generateAllMoves(board, side) {
         let moves;
         const key = HashService.hashMovementSide(board.getHash(), side);
-        if (configs.moveCacheEnabled && this.generatedMoves.hasOwnProperty(key)) {
-            moves = this.generatedMoves[key];
-            this.generatedMovesUses += 1;
+        if (configs.moveCacheEnabled && (moves = CacheService.getMoves(key))) {
+            // console.log('Cached Move!!!');
+            return moves;
         }
-        else {
-            this.boardModel = board;
-            moves = this._generateAllMoves(side);
-            if (configs.moveCacheEnabled) {
-                this.generatedMoves[key] = moves;
-                this.generatedMoves[HashService.hashMovementSide(board.getHash(), side ^ 1)] = this._generateAllMoves(side ^ 1);
-            }
+
+        this.boardModel = board;
+        moves = this._generateAllMoves(side);
+        
+        if (configs.moveCacheEnabled) {
+            CacheService.cacheMoves(board.getHash(), key, moves);
+            CacheService.cacheMoves(
+                board.getHash(), 
+                HashService.hashMovementSide(board.getHash(), side ^ 1), 
+                this._generateAllMoves(side ^ 1)
+            );
         }
 
         return moves;

@@ -8,7 +8,6 @@ class EvaluationService {
     constructor() {
         this.evaluationModel = new EvaluationModel();
         this.evaluatedScores = {};
-        this.evaluatedScoresUses = 0;
         this.pieceService = PieceService;
     }
 
@@ -249,21 +248,7 @@ class EvaluationService {
         let score;
         const playSide = (board.getSide() === configs.colors.white) ? 1 : -1;
 
-        //hash key without side
-        // var key = HashService.hashSide(board.getHash(), board.getSide(), true);
-// console.log(NotationService.convertToFEN(board));
-// console.log('key: ', key);
-// console.log('board: ', board.getHash());
-//             if (configs.evaluationCacheEnabled && evaluatedScores.hasOwnProperty(key)) {
-//                 score = evaluatedScores[key];
-        // evaluatedScoresUses += 1;
-        // }
-        // else {
         score = this._evaluateBoard(board, currentMove);
-        // if (configs.evaluationCacheEnabled) {
-        //     evaluatedScores[key] = score;
-        // }
-        // }
 
         //fix the negative zero issue
         return (score * playSide) + 1 - 1;
@@ -271,10 +256,6 @@ class EvaluationService {
 
     getEvaluatedScoresCount() {
         return size(this.evaluatedScores);
-    }
-
-    getEvaluatedScoresUses() {
-        return this.evaluatedScoresUses;
     }
 }
 

@@ -1,0 +1,6 @@
+specs
+.idea
+node_modules
+.vscode
+gulpfile.js
+.eslintrc.json

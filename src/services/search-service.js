@@ -9,6 +9,7 @@ const LoggerService = require('./logger-service.js');
 
 const configs = require('../configurations');
 const pad = require('lodash/pad');
+const assignIn = require('lodash/assignIn');
 
 class SearchService {
     constructor() {
@@ -57,17 +58,15 @@ class SearchService {
 
     _checkUp() {
         if (this.alphaBetaEvaluations > 0 && (this.alphaBetaEvaluations % 100) === 0) {
-            if ((SearchService._now() - this.searchStart) > this.searchTime) {
-                this.searchStop = true;
-            }
+            // if ((SearchService._now() - this.searchStart) > this.searchTime) {
+            //     this.searchStop = true;
+            // }
 
             if ((this.alphaBetaEvaluations % 2000) === 0) {
                 const timeSoFar = (SearchService._now() - this.searchStart) / 1000;
 
                 LoggerService.log(`Time elapsed: ${timeSoFar}`, configs.logLevels.evaluation);
                 LoggerService.log(`Evaluations per second: ${this.alphaBetaEvaluations / timeSoFar}`, configs.logLevels.evaluation);
-                LoggerService.log(`Saved evaluations uses: ${this.EvaluationService.getEvaluatedScoresUses()}`, configs.logLevels.evaluation);
-                LoggerService.log(`Saved evaluations count: ${this.EvaluationService.getEvaluatedScoresCount()}`, configs.logLevels.evaluation);
                 LoggerService.log('-----------------------------', configs.logLevels.evaluation);
             }
         }
@@ -189,14 +188,14 @@ class SearchService {
         }
         this.searchNodes += 1;
         moves = this.BoardService.generateAllMoves(board.getSide());
-// NotationService.printMoveArray(moves);
+        // NotationService.printMoveArray(moves);
         //put the best move from the last iteration on top
         this.PvTableService.promoteLastBestMove(moves, board.getHash());
-// NotationService.printMoveArray(moves);
+        // NotationService.printMoveArray(moves);
         this.CutoffService.promoteBetaMoves(moves, currentDepth);
-// NotationService.printMoveArray(moves);
+        // NotationService.printMoveArray(moves);
         this.CutoffService.promoteAlphaMoves(moves, currentDepth);
-// NotationService.printMoveArray(moves);
+            // NotationService.printMoveArray(moves);
 
         this.BoardService.switchSide();
 
@@ -205,14 +204,14 @@ class SearchService {
             this.BoardService.getBoard().setSide(side);
             board = this.BoardService.getBoard();
             move = this.MoveService.pickNextMove(moves, index);
-// NotationService.printMove(move);
+                // NotationService.printMove(move);
             if (!this.BoardService.makeMove(move)) {
                 continue;
             }
 
             legalMoves += 1;
             move.score = -this._alphaBeta(-beta, -alpha, depthLeft - 1, currentDepth + 1, move);
-// console.log('score: '+move.score);
+                // console.log('score: ' + move.score);
             this.BoardService.rollbackMove();
 
             if (this.searchStop) {
@@ -263,86 +262,36 @@ class SearchService {
 
     /**
      *
-     * @param searchTime integer - in seconds
-     * @param depth integer - search depth > 0
+     * @param options object - default {
+            minDepth: 6,
+            maxSearchTime: 3000
+        }
      * @returns {*}
      */
-    searchNextMove(searchTime = this.defaultSearchTime, depth = this.maxDepth) {
-        let bestMove = null;
+    searchNextMove(options = {}) {
         let board = this.BoardService.getBoard();
-        let side = board.getSide();
         let initHash = board.getHash();
-        let currentDepth;
-        let timeSoFar;
         let line = '';
+        const defaultOptions = {
+            minDepth: 6,
+            maxSearchTime: 3000
+        }
+        options = assignIn(defaultOptions, options);
 
         // NotationService.printBoard(board.get64Board());
-        this.searchTime = searchTime * 1000;
+        this.searchTime = options.maxSearchTime * 1000;
         this._resetSearch();
+        this._alphaBeta(-Number.MAX_VALUE, Number.MAX_VALUE, options.minDepth, 1);
 
-        LoggerService.log(
-            pad('Depth', 8) +
-            pad('Best move', 12) +
-            pad('Score', 8) +
-            pad('Nodes', 8) +
-            pad('Time elapsed', 15) +
-            pad('Ordering', 8)
-        );
-
-        // iterative deepening
-        for (currentDepth = 1; currentDepth <= depth; currentDepth += 1) {
-            // console.log('------------------------');
-            // console.log('currentDepth: '+currentDepth);
-            // console.log('------------------------');
-            this._alphaBeta(-Number.MAX_VALUE, Number.MAX_VALUE, currentDepth, 1);
-            this.BoardService.getBoard().setSide(side);
-            this.BoardService.updateBoardHash(initHash); //to ensure that the hash is the same in each iteration
-
-            if (this.searchStop && bestMove !== false) {
-                break;
-            }
-
-            bestMove = this.PvTableService.probeTable(initHash);
-
-            if (this.searchStop) {
-                break;
-            }
-
-            if (bestMove &&
-                bestMove.hasOwnProperty('score') &&
-                Math.abs(bestMove.score) >= this.checkmateScore) {
-
-                LoggerService.log(`Checkmate move, level ${currentDepth}, move: ${this.MoveService.convertToString(bestMove)}`, configs.logLevels.search);
-                break;
-            }
-
-            timeSoFar = (SearchService._now() - this.searchStart) / 1000;
-            line = pad(currentDepth, 8);
-            line += pad(this.MoveService.convertToString(bestMove), 12);
-            line += pad(bestMove.score, 8);
-            line += pad(this.searchNodes, 8);
-            line += pad(timeSoFar, 15);
-
-            if (currentDepth > 1) {
-                line += pad((this.failHighFirst / this.failHigh * 100).toFixed(2) + '%', 8);
-            }
-            else {
-                line += '-';
-            }
-
-            LoggerService.log(line, configs.logLevels.search);
-
-            LoggerService.log(`Evaluations so far: ${this.alphaBetaEvaluations}`, configs.logLevels.evaluation);
-            LoggerService.log(`Saved evaluations uses: ${this.EvaluationService.getEvaluatedScoresUses()}`, configs.logLevels.evaluation);
-            LoggerService.log(`Saved evaluations count: ${this.EvaluationService.getEvaluatedScoresCount()}`, configs.logLevels.evaluation);
-            LoggerService.log(`-----------------------------`, configs.logLevels.evaluation);
-        }
+        const bestMove = this.PvTableService.probeTable(initHash);
 
         LoggerService.log('-----------------------------', configs.logLevels.search);
-        line = 'Search finished';
+        line = `Search finished for Depth ${options.minDepth}\n`;
+        line += `Evaluations so far: ${this.alphaBetaEvaluations}`;
         line += ', Best Move: ' + this.MoveService.convertToString(bestMove);
+        line += ', Score: ' + bestMove.score;
         line += ', Max Depth reached: ' + this.maxDepthReached;
-        line += ', Time: ' + (SearchService._now() - this.searchStart) / 1000;
+        line += ', Time: ' + ((SearchService._now() - this.searchStart) / 1000) + ' seconds';
         line += ', Nodes: ' + this.searchNodes;
         LoggerService.log(line, configs.logLevels.search);
         LoggerService.log('-----------------------------', configs.logLevels.search);

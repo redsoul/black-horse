@@ -593,10 +593,6 @@ class BoardService {
         return validMoves;
     }
 
-    updateMoveScore(move, index, side) {
-        this.MoveService.updateMoveScore(move.hash, side, index, move.score);
-    }
-
     resetMoveService() {
         this.MoveService.reset();
     }

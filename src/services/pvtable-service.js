@@ -13,7 +13,7 @@ class PvTableService {
 
     reset() {
         each(this.pvTable, (entry, index) => {
-            this.pvTable[index] = {move: null, hash: null};
+            this.pvTable[index] = { move: null, hash: null };
         });
     };
 
@@ -45,7 +45,9 @@ class PvTableService {
         const pvMove = this.probeTable(hash);
 
         if (pvMove) {
-            each(moves, (move) => {
+            let move;
+            for (let i = 0, len = moves.length; i < len; i++) {
+                move = moves[i];
                 if (move.rowOrig === pvMove.rowOrig &&
                     move.columnOrig === pvMove.columnOrig &&
                     move.rowDest === pvMove.rowDest &&
@@ -53,7 +55,7 @@ class PvTableService {
                     move.score = this.promotedScore;
                     return false;
                 }
-            });
+            };
             return true;
         }
         return false;

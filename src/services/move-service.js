@@ -1,5 +1,3 @@
-const HashService = require('./hash-service.js');
-const CacheService = require('./cache-service.js');
 const MvvLvaService = require('./mvv-lva-service');
 const cloneDeep = require('lodash/cloneDeep');
 const isUndefined = require('lodash/isUndefined');
@@ -144,15 +142,17 @@ class MoveService {
         let piece;
         const colour = this.boardModel.getPieceColour(row, column);
 
-        each(this.knightAvailableMoves, (knightAvailableMove) => {
+        let knightAvailableMove;
+        for (let i = 0, len = this.knightAvailableMoves.length; i < len; i++) {
+            knightAvailableMove = this.knightAvailableMoves[i];
             piece = this.boardModel.getPieceByRowColumn(row + knightAvailableMove[0], column + knightAvailableMove[1]);
             if (piece !== configs.pieces.offBoard && (
-                    (colour !== this.boardModel.getPieceColour(row + knightAvailableMove[0], column + knightAvailableMove[1])) ||
-                    piece === configs.pieces.empty
-                )) {
+                (colour !== this.boardModel.getPieceColour(row + knightAvailableMove[0], column + knightAvailableMove[1])) ||
+                piece === configs.pieces.empty
+            )) {
                 moves.push([row + knightAvailableMove[0], column + knightAvailableMove[1]]);
             }
-        });
+        };
 
         return moves;
     }
@@ -164,10 +164,12 @@ class MoveService {
         let indexR;
         let indexC;
 
-        each(this.bishopDirections, (bishopDirection) => {
+        let bishopDirection;
+        for (let i = 0, len = this.bishopDirections.length; i < len; i++) {
+            bishopDirection = this.bishopDirections[i];
             for (indexR = row + bishopDirection[0], indexC = column + bishopDirection[1];
-                 indexR >= 8 || indexC >= 8 || indexR <= 8 || indexC <= 8;
-                 indexR += bishopDirection[0], indexC += bishopDirection[1]) {
+                indexR >= 8 || indexC >= 8 || indexR <= 8 || indexC <= 8;
+                indexR += bishopDirection[0], indexC += bishopDirection[1]) {
                 piece = this.boardModel.getPieceByRowColumn(indexR, indexC);
                 if (piece !== configs.pieces.offBoard &&
                     ((colour !== this.boardModel.getPieceColour(indexR, indexC) || piece === configs.pieces.empty))) {
@@ -177,7 +179,7 @@ class MoveService {
                     break;
                 }
             }
-        });
+        };
 
         return moves;
     }
@@ -189,10 +191,12 @@ class MoveService {
         let indexR;
         let indexC;
 
-        each(this.rookDirections, (rookDirection) => {
+        let rookDirection;
+        for (let i = 0, len = this.rookDirections.length; i < len; i++) {
+            rookDirection = this.rookDirections[i];
             for (indexR = row + rookDirection[0], indexC = column + rookDirection[1];
-                 indexR >= 8 || indexC >= 8 || indexR <= 8 || indexC <= 8;
-                 indexR += rookDirection[0], indexC += rookDirection[1]) {
+                indexR >= 8 || indexC >= 8 || indexR <= 8 || indexC <= 8;
+                indexR += rookDirection[0], indexC += rookDirection[1]) {
                 piece = this.boardModel.getPieceByRowColumn(indexR, indexC);
                 if (piece !== configs.pieces.offBoard &&
                     ((colour !== this.boardModel.getPieceColour(indexR, indexC) || piece === configs.pieces.empty))) {
@@ -202,7 +206,7 @@ class MoveService {
                     break;
                 }
             }
-        });
+        };
 
         return moves;
     }
@@ -214,15 +218,17 @@ class MoveService {
         const color = this.boardModel.getPieceColour(row, column);
         let castleFlags;
 
-        each(this.kingAvailableMoves, (kingAvailableMove) => {
+        let kingAvailableMove;
+        for (let i = 0, len = this.kingAvailableMoves.length; i < len; i++) {
+            kingAvailableMove = this.kingAvailableMoves[i];
             piece = this.boardModel.getPieceByRowColumn(row + kingAvailableMove[0], column + kingAvailableMove[1]);
             if (piece !== configs.pieces.offBoard && (
-                    (color !== this.boardModel.getPieceColour(row + kingAvailableMove[0], column + kingAvailableMove[1])) ||
-                    piece === configs.pieces.empty
-                )) {
+                (color !== this.boardModel.getPieceColour(row + kingAvailableMove[0], column + kingAvailableMove[1])) ||
+                piece === configs.pieces.empty
+            )) {
                 moves.push([row + kingAvailableMove[0], column + kingAvailableMove[1]]);
             }
-        });
+        };
 
         //castle moves
         castleFlags = this.boardModel.getCastleFlags()[color];
@@ -280,7 +286,9 @@ class MoveService {
                 break;
         }
 
-        each(pieceMoves, (pieceMove) => {
+        let pieceMove;
+        for (let i = 0, len = pieceMoves.length; i < len; i++) {
+            pieceMove = pieceMoves[i]
             flag = (typeof pieceMove[2] !== 'undefined') ? pieceMove[2] : null;
             move = {
                 piece: piece,
@@ -297,7 +305,7 @@ class MoveService {
             };
             move.score = this.MvvLvaService.getScore(this.boardModel, move);
             moves.push(move);
-        });
+        };
 
         return moves;
     }
@@ -358,11 +366,11 @@ class MoveService {
         //bishop and queen attack moves
         for (index = 0, arrayLength = this.bishopDirections.length; index < arrayLength; index += 1) {
             for (indexR = row + this.bishopDirections[index][0], indexC = column + this.bishopDirections[index][1];
-                 indexR >= 8 || indexC >= 8 || indexR <= 8 || indexC <= 8;
-                 indexR += this.bishopDirections[index][0], indexC += this.bishopDirections[index][1]) {
+                indexR >= 8 || indexC >= 8 || indexR <= 8 || indexC <= 8;
+                indexR += this.bishopDirections[index][0], indexC += this.bishopDirections[index][1]) {
                 piece = this.boardModel.getPieceByRowColumn(indexR, indexC);
                 if ((piece === configs.pieces.wB || piece === configs.pieces.bB ||
-                        piece === configs.pieces.wQ || piece === configs.pieces.bQ) &&
+                    piece === configs.pieces.wQ || piece === configs.pieces.bQ) &&
                     colour !== this.boardModel.getPieceColour(indexR, indexC)) {
                     return true;
                 }
@@ -375,11 +383,11 @@ class MoveService {
         //rook and queen attack moves
         for (index = 0, arrayLength = this.rookDirections.length; index < arrayLength; index += 1) {
             for (indexR = row + this.rookDirections[index][0], indexC = column + this.rookDirections[index][1];
-                 indexR >= 8 || indexC >= 8 || indexR <= 8 || indexC <= 8;
-                 indexR += this.rookDirections[index][0], indexC += this.rookDirections[index][1]) {
+                indexR >= 8 || indexC >= 8 || indexR <= 8 || indexC <= 8;
+                indexR += this.rookDirections[index][0], indexC += this.rookDirections[index][1]) {
                 piece = this.boardModel.getPieceByRowColumn(indexR, indexC);
                 if ((piece === configs.pieces.wR || piece === configs.pieces.bR ||
-                        piece === configs.pieces.wQ || piece === configs.pieces.bQ) &&
+                    piece === configs.pieces.wQ || piece === configs.pieces.bQ) &&
                     colour !== this.boardModel.getPieceColour(indexR, indexC)) {
                     return true;
                 }
@@ -474,26 +482,8 @@ class MoveService {
     }
 
     generateAllMoves(board, side) {
-        let moves;
-        const key = HashService.hashMovementSide(board.getHash(), side);
-        if (configs.moveCacheEnabled && (moves = CacheService.getMoves(key))) {
-            // console.log('Cached Move!!!');
-            return moves;
-        }
-
         this.boardModel = board;
-        moves = this._generateAllMoves(side);
-        
-        if (configs.moveCacheEnabled) {
-            CacheService.cacheMoves(board.getHash(), key, moves);
-            CacheService.cacheMoves(
-                board.getHash(), 
-                HashService.hashMovementSide(board.getHash(), side ^ 1), 
-                this._generateAllMoves(side ^ 1)
-            );
-        }
-
-        return moves;
+        return this._generateAllMoves(side);
     }
 
     generateAllCaptureMoves(board, side) {
@@ -513,14 +503,6 @@ class MoveService {
         }
 
         return captureMoves;
-    }
-
-    updateMoveScore(hash, side, index, score) {
-        const key = HashService.hashMovementSide(hash, side);
-        if (configs.moveCacheEnabled && this.generatedMoves.hasOwnProperty(key) && this.generatedMoves[key].hasOwnProperty(index)) {
-            //generatedMoves[key][index].score = score * (side === configs.colors.white ? 1 : -1);
-            this.generatedMoves[key][index].score = score;
-        }
     }
 
     addToHistory(board, move) {

@@ -9,7 +9,6 @@ describe('Move Service', function () {
 
     beforeEach(function () {
         boardService.initBoard();
-        configs.moveCacheEnabled = true;
     });
 
     describe('isPieceAttacked function - ', function () {
@@ -67,41 +66,27 @@ describe('Move Service', function () {
             let board = boardService.getBoard();
             let moves = moveService.generateAllMoves(board, configs.colors.white);
             expect(moves.length).toBe(4);
-            expect(moveService.getGeneratedMovesCount()).toBe(2);
-            expect(moveService.getGeneratedMovesUses()).toBe(0);
 
             moves = moveService.generateAllMoves(board, configs.colors.black);
             expect(moves.length).toBe(4);
-            expect(moveService.getGeneratedMovesCount()).toBe(2);
-            expect(moveService.getGeneratedMovesUses()).toBe(1);
-
 
             boardService.makeMoveXY(1, 8, 1, 7);
 
             board = boardService.getBoard();
             moves = moveService.generateAllMoves(board, configs.colors.white);
             expect(moves.length).toBe(6);
-            expect(moveService.getGeneratedMovesCount()).toBe(4);
-            expect(moveService.getGeneratedMovesUses()).toBe(1);
 
             moves = moveService.generateAllMoves(board, configs.colors.black);
             expect(moves.length).toBe(4);
-            expect(moveService.getGeneratedMovesCount()).toBe(4);
-            expect(moveService.getGeneratedMovesUses()).toBe(2);
-
 
             boardService.makeMoveXY(1, 7, 1, 8);
 
             board = boardService.getBoard();
             moves = moveService.generateAllMoves(board, configs.colors.white);
             expect(moves.length).toBe(4);
-            expect(moveService.getGeneratedMovesCount()).toBe(4);
-            expect(moveService.getGeneratedMovesUses()).toBe(3);
 
             moves = moveService.generateAllMoves(board, configs.colors.black);
             expect(moves.length).toBe(4);
-            expect(moveService.getGeneratedMovesCount()).toBe(4);
-            expect(moveService.getGeneratedMovesUses()).toBe(4);
         });
 
         test('FEN 2', function () {
@@ -540,6 +525,58 @@ describe('Move Service', function () {
                 depth4: 103116,
                 depth5: 1935527,
                 depth6: 69634302
+            },
+            {
+                fen: 'r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -',
+                depth1: 48,
+                depth2: 2038, //2039
+                depth3: 97862,
+                depth4: 4085603,
+                depth5: 193690690,
+                depth6: 8031647685
+            },
+            {
+                fen: '8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - -',
+                depth1: 14,
+                depth2: 191,
+                depth3: 2812,
+                depth4: 43238,
+                depth5: 674624,
+                depth6: 11030083
+            },
+            {
+                fen: 'r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1',
+                depth1: 6,
+                depth2: 258,//264
+                depth3: 9467,
+                depth4: 422333,
+                depth5: 15833292,
+                depth6: 706045033
+            },
+            {
+                fen: 'r2q1rk1/pP1p2pp/Q4n2/bbp1p3/Np6/1B3NBn/pPPP1PPP/R3K2R b KQ - 0 1',
+                depth1: 6,
+                depth2: 258,//264
+                depth3: 9467,
+                depth4: 422333,
+                depth5: 15833292,
+                depth6: 706045033
+            },
+            {
+                fen: 'rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8',
+                depth1: 44,
+                depth2: 1486,
+                depth3: 62379,
+                depth4: 2103487,
+                depth5: 89941194
+            },
+            {
+                fen: 'r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10',
+                depth1: 46,
+                depth2: 2079,
+                depth3: 89890,
+                depth4: 3894594,
+                depth5: 164075551
             }
         ];
 

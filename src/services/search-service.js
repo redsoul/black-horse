@@ -263,17 +263,17 @@ class SearchService {
     /**
      *
      * @param options object - default {
-            minDepth: 6,
+            minDepth: 4,
             maxSearchTime: 3000
         }
      * @returns {*}
      */
     searchNextMove(options = {}) {
         let board = this.BoardService.getBoard();
+        // this.BoardService.printBoard(board.get64Board());
         let initHash = board.getHash();
-        let line = '';
         const defaultOptions = {
-            minDepth: 6,
+            minDepth: 4,
             maxSearchTime: 3000
         }
         options = assignIn(defaultOptions, options);
@@ -286,13 +286,13 @@ class SearchService {
         const bestMove = this.PvTableService.probeTable(initHash);
 
         LoggerService.log('-----------------------------', configs.logLevels.search);
-        line = `Search finished for Depth ${options.minDepth}\n`;
-        line += `Evaluations so far: ${this.alphaBetaEvaluations}`;
-        line += ', Best Move: ' + this.MoveService.convertToString(bestMove);
-        line += ', Score: ' + bestMove.score;
-        line += ', Max Depth reached: ' + this.maxDepthReached;
-        line += ', Time: ' + ((SearchService._now() - this.searchStart) / 1000) + ' seconds';
-        line += ', Nodes: ' + this.searchNodes;
+        let line = `Search finished for Depth ${options.minDepth}\n`
+         + `Evaluations so far: ${this.alphaBetaEvaluations}`
+         + ', Best Move: ' + this.MoveService.convertToString(bestMove)
+         + ', Score: ' + bestMove.score
+         + ', Max Depth reached: ' + this.maxDepthReached
+         + ', Time: ' + ((SearchService._now() - this.searchStart) / 1000) + ' seconds'
+         + ', Nodes: ' + this.searchNodes;
         LoggerService.log(line, configs.logLevels.search);
         LoggerService.log('-----------------------------', configs.logLevels.search);
 

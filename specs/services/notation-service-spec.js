@@ -1,100 +1,68 @@
 const NotationService = require('../../src/services/notation-service.js');
+const MoveService = require('../../src/services/move-service.js');
+const BoardService = require('../../src/services/board-service.js');
 const configs = require('../../src/configurations');
 
 describe('NotationService', function () {
     'use strict';
 
-    describe('algebraicNotation function -', function () {
-        test('Move pieces to empty space - no flags', function () {
-            expect(NotationService.algebraicNotation(configs.pieces.bP, configs.pieces.empty, {rowDest: 5, columnDest:2}, {})).toBe('b5');
-            expect(NotationService.algebraicNotation(configs.pieces.bB, configs.pieces.empty, {rowDest: 5, columnDest:2}, {})).toBe('Bb5');
+    describe('standartAlgebraicNotation function -', function () {
+        test('Algebraic Notation on board initiation', function () {
+            BoardService.initBoard();
+            const board = BoardService.getBoard();
+            let validMoves = MoveService.generateAllMoves(board, configs.colors.white);
+            let expectedMoves = [
+                'd4', 'e4', 'Nc3', 'Nf3', 'd3', 'e3',
+                'Na3', 'Nh3', 'c4', 'f4', 'c3', 'f3',
+                'a3', 'h3', 'a4', 'b3', 'b4', 'g3',
+                'g4', 'h4'
+            ];
+            expectedMoves.forEach((expectedMove, index) => {
+                expect(NotationService.standartAlgebraicNotation(validMoves, validMoves[index])).toBe(expectedMove);
+            });
 
-            expect(NotationService.algebraicNotation(configs.pieces.wP, configs.pieces.empty, {rowDest: 4, columnDest:3}, {})).toBe('c4');
-            expect(NotationService.algebraicNotation(configs.pieces.bN, configs.pieces.empty, {rowDest: 4, columnDest:3}, {})).toBe('Nc4');
-
-            expect(NotationService.algebraicNotation(configs.pieces.bK, configs.pieces.empty, {rowDest: 6, columnDest:4}, {})).toBe('Kd6');
-            expect(NotationService.algebraicNotation(configs.pieces.wK, configs.pieces.empty, {rowDest: 7, columnDest:5}, {})).toBe('Ke7');
+            validMoves = MoveService.generateAllMoves(board, configs.colors.black);
+            expectedMoves = [
+                'd5', 'e5', 'nc6', 'nf6', 'd6', 'e6',
+                'c5', 'f5', 'na6', 'nh6', 'c6', 'f6',
+                'a6', 'h6', 'a5', 'b6', 'b5', 'g6',
+                'g5', 'h5'
+            ];
+            expectedMoves.forEach((expectedMove, index) => {
+                expect(NotationService.standartAlgebraicNotation(validMoves, validMoves[index])).toBe(expectedMove);
+            });
         });
 
-        test('Move pieces to empty space - isOppositeKingInCheck flag', function () {
-            const moveFlag = {
-                isOppositeKingInCheck: true
-            };
+        test('Ambiguous moves #1', function () {
+            BoardService.parseFEN('7r1/r6p/pk6/3p1p2/4P3/8/P6P/R3K2R b KQkq - 0 1');
+            const board = BoardService.getBoard();
+            const validMoves = MoveService.generateAllMoves(board, configs.colors.black);
 
-            expect(NotationService.algebraicNotation(configs.pieces.bP, configs.pieces.empty, {rowDest: 5, columnDest:2}, moveFlag)).toBe('b5+');
-            expect(NotationService.algebraicNotation(configs.pieces.bB, configs.pieces.empty, {rowDest: 5, columnDest:2}, moveFlag)).toBe('Bb5+');
-
-            expect(NotationService.algebraicNotation(configs.pieces.wP, configs.pieces.empty, {rowDest: 4, columnDest:3}, moveFlag)).toBe('c4+');
-            expect(NotationService.algebraicNotation(configs.pieces.bN, configs.pieces.empty, {rowDest: 4, columnDest:3}, moveFlag)).toBe('Nc4+');
-
-            expect(NotationService.algebraicNotation(configs.pieces.bK, configs.pieces.empty, {rowDest: 6, columnDest:4}, moveFlag)).toBe('Kd6+');
-            expect(NotationService.algebraicNotation(configs.pieces.wK, configs.pieces.empty, {rowDest: 7, columnDest:5}, moveFlag)).toBe('Ke7+');
+            const expectedMoves = [
+                'dxe4', 'fxe4', 'kb7', 'kc7', 'rd7', 're7',
+                're8', 'rd8', 'rc7', 'rf7', 'rf8', 'rc8',
+                'kc6', 'raa8', 'rb7', 'rg7', 'rg8', 'rb8',
+                'rha8', 'f4', 'a5', 'h6', 'd4', 'h5',
+                'kb5', 'ka5', 'kc5'
+            ];
+            expectedMoves.forEach((expectedMove, index) => {
+                expect(NotationService.standartAlgebraicNotation(validMoves, validMoves[index])).toBe(expectedMove);
+            });
         });
 
-        test('Move pieces to empty space - enPassant flag', function () {
-            const moveFlag = {
-                enPassant: true
-            };
-
-            expect(NotationService.algebraicNotation(configs.pieces.wP, configs.pieces.empty, {rowDest: 4, columnDest:2}, moveFlag)).toBe('exb4(ep)');
-            expect(NotationService.algebraicNotation(configs.pieces.bP, configs.pieces.empty, {rowDest: 5, columnDest:2}, moveFlag)).toBe('exb5(ep)');
-        });
-
-        test('Move pieces to empty space - promotion flag', function () {
-            const moveFlag = {
-                promotion: true
-            };
-
-            expect(NotationService.algebraicNotation(configs.pieces.bP, configs.pieces.empty,
-                {rowDest: 1, columnDest:2, promotedPiece: configs.pieces.bQ}, moveFlag)).toBe('b1=Q');
-            expect(NotationService.algebraicNotation(configs.pieces.wP, configs.pieces.empty,
-                {rowDest: 8, columnDest:3, promotedPiece: configs.pieces.wR}, moveFlag)).toBe('c8=R');
-            expect(NotationService.algebraicNotation(configs.pieces.wP, configs.pieces.empty,
-                {rowDest: 8, columnDest:3}, moveFlag)).toBe('c8');
-        });
-
-        test('Move pieces to empty space - castle flag', function () {
-            const castleFlags = [];
-            castleFlags[configs.colors.white] = {
-                kingSide: true,
-                queenSide: false
-            };
-            castleFlags[configs.colors.black] = {
-                kingSide: false,
-                queenSide: false
-            };
-
-            expect(NotationService.algebraicNotation(configs.pieces.wK, configs.pieces.empty,
-                {rowDest: 1, columnDest:3}, {castle: castleFlags})).toBe('0-0');
-
-            castleFlags[configs.colors.white].kingSide = false;
-            castleFlags[configs.colors.white].queenSide = true;
-            expect(NotationService.algebraicNotation(configs.pieces.wP, configs.pieces.empty,
-                {rowDest: 1, columnDest:8}, {castle: castleFlags})).toBe('0-0-0');
-
-            castleFlags[configs.colors.white].queenSide = false;
-            castleFlags[configs.colors.black].kingSide = true;
-            castleFlags[configs.colors.black].queenSide = false;
-            expect(NotationService.algebraicNotation(configs.pieces.wP, configs.pieces.empty,
-                {rowDest: 8, columnDest:3}, {castle: castleFlags})).toBe('0-0');
-
-            castleFlags[configs.colors.black].kingSide = false;
-            castleFlags[configs.colors.black].queenSide = true;
-            expect(NotationService.algebraicNotation(configs.pieces.wP, configs.pieces.empty,
-                {rowDest: 8, columnDest:8}, {castle: castleFlags})).toBe('0-0-0');
-        });
-
-        test('Capture moves', function () {
-            expect(NotationService.algebraicNotation(configs.pieces.bP, configs.pieces.wP,
-                {rowDest: 4, columnDest:2}, {})).toBe('exb4');
-            expect(NotationService.algebraicNotation(configs.pieces.wP, configs.pieces.bR,
-                {rowDest: 8, columnDest:2, promotedPiece: configs.pieces.wQ}, {promotion: true})).toBe('b8=Q');
-            expect(NotationService.algebraicNotation(configs.pieces.wP, configs.pieces.bR,
-                {rowDest: 8, columnDest:2, promotedPiece: configs.pieces.wQ}, {promotion: true, isOppositeKingInCheck: true})).toBe('b8=Q+');
-            expect(NotationService.algebraicNotation(configs.pieces.wP, configs.pieces.bP,
-                {rowDest: 6, columnDest:3}, {})).toBe('exc6');
-            expect(NotationService.algebraicNotation(configs.pieces.wR, configs.pieces.bB,
-                {rowDest: 8, columnDest:3}, {})).toBe('Rxc8');
+        test('Ambiguous moves #2', function () {
+            BoardService.parseFEN('7r1/r4P1p/pk6/3p1pP1/4P3/8/P6P/R3K2R w KQkq f6 0 1');
+            const board = BoardService.getBoard();
+            const validMoves = MoveService.generateAllMoves(board, configs.colors.white);
+            const expectedMoves = [
+                'exf5', 'exd5', 'gxf6 e.p.', '0-0', '0-0-0', 'Rd1',
+                'Kf1', 'Rc1', 'Rf1', 'g6', 'Rb1', 'Kd1',
+                'Rg1', 'a3', 'h3', 'a4', 'h4', 'e5',
+                'Ke2', 'Kd2', 'Kf2', 'f8=Q'
+            ];
+            expectedMoves.forEach((expectedMove, index) => {
+                expect(NotationService.standartAlgebraicNotation(validMoves, validMoves[index])).toBe(expectedMove);
+            });
         });
     });
 });

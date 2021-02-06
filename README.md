@@ -21,16 +21,16 @@ All the methods use the coordinates system based on the following board:
 
 ```Javascript
 /*
-         7    r  n  b  q  k  b  n  r
-         6    p  p  p  p  p  p  p  p
+         8    r  n  b  q  k  b  n  r
+         7    p  p  p  p  p  p  p  p
+         6
          5
          4
          3
-         2
-         1    P  P  P  P  P  P  P  P
-         0    R  N  B  Q  K  B  N  R
+         2    P  P  P  P  P  P  P  P
+         1    R  N  B  Q  K  B  N  R
 
-              0  1  2  3  4  5  6  7
+              1  2  3  4  5  6  7  8
 */
 ```
 
@@ -45,16 +45,16 @@ Prints de current board to the console
 ```Javascript
 BlackHorseChessEngine.printBoard();
 /*
-         7    r  n  b  q  k  b  n  r
-         6    p  p  p  p  p  p  p  p
-         5
-         4
-         3
-         2
-         1    P  P  P  P  P  P  P  P
-         0    R  N  B  Q  K  B  N  R
-
-              0  1  2  3  4  5  6  7
+         8   r  n  b  q  k  b  n  r 
+         7   p  p  p  p  p  p  p  p 
+         6   .  .  .  .  .  .  .  . 
+         5   .  .  .  .  .  .  .  . 
+         4   .  .  .  .  .  .  .  . 
+         3   .  .  .  .  .  .  .  . 
+         2   P  P  P  P  P  P  P  P 
+         1   R  N  B  Q  K  B  N  R 
+ 
+             a  b  c  d  e  f  g  h 
 */
 ```
 
@@ -100,12 +100,15 @@ console.log(BlackHorseChessEngine.getBoard());
 ```
 
 ### getPieceValidMoves(row, column)
+### getPieceValidMoves(notation)
 Returns an Array of all the valid moves for the piece in the position indicated by the coordinates
 ```Javascript
-console.log(BlackHorseChessEngine.getPieceValidMoves(2, 2));
+console.log(BlackHorseChessEngine.getPieceValidMoves(2, 2)); 
+console.log(BlackHorseChessEngine.getPieceValidMoves('b2')); 
 /*
 [ 
   { 
+    algebraicNotation: 'b3',
     piece: 1,
     pieceDest: 0,
     side: 0,
@@ -119,6 +122,7 @@ console.log(BlackHorseChessEngine.getPieceValidMoves(2, 2));
     score: -10 
   },
   { 
+    algebraicNotation: 'b4',
     piece: 1,
     pieceDest: 0,
     side: 0,
@@ -144,13 +148,20 @@ BlackHorseChessEngine.isCheckMate(0); //false
 BlackHorseChessEngine.isCheckMate(1); //true
 ```
 
-### searchNextMove(searchTime, depth)
+### searchNextMove(options)
+#### options
+```Javascript
+{
+    minDepth: 4,
+    maxSearchTime: 3000
+}
+```
 Search the next move for the current side
 ```Javascript
 BlackHorseChessEngine.initBoard();
 const searchTime = 1000 // max search time spended in milli-seconds - default 1000 (1 second)
 const searchDepth = 10 // max search depth - default 20
-const nextMove = BlackHorseChessEngine.searchNextMove(searchTime, searchDepth);
+const nextMove = BlackHorseChessEngine.searchNextMove({minDepth:6});
 /*
 {
     "columnDest": 4,
@@ -169,14 +180,19 @@ const nextMove = BlackHorseChessEngine.searchNextMove(searchTime, searchDepth);
 ### makeMove(moveObject)
 Search the next move for the current side
 ```Javascript
-console.log(BlackHorseChessEngine.makeMove({
+console.log(BlackHorseChessEngine.move({
                                    "columnDest": 4,
                                    "columnOrig": 4,
                                    "rowDest": 4,
                                    "rowOrig": 2,
                                }));
+console.log(BlackHorseChessEngine.move('d4');
 /*
-{}
+{
+  algebraicNotation: 'd4',
+  board: { 'board object' },
+  isCheckMate: false
+}
 */
 
 ```
@@ -206,4 +222,4 @@ Object containing all the configurations used in the chess engine.
 
 # Node.js version compatibility
 
-6.0.0 or higher
+12.0.0 or higher

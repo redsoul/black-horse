@@ -1,5 +1,4 @@
 const times = require('lodash/times');
-const each = require('lodash/each');
 
 class CutoffService {
     constructor() {
@@ -10,17 +9,17 @@ class CutoffService {
     }
 
     _promoteCutOffMoves(moves, cutOffMoves, score) {
-        each(cutOffMoves, function (cutOffMove) {
-            each(moves, function (move) {
+        for(let cutOffMove of cutOffMoves) {
+            for(let move of moves) {
                 if (move.rowOrig === cutOffMove.rowOrig &&
                     move.columnOrig === cutOffMove.columnOrig &&
                     move.rowDest === cutOffMove.rowDest &&
                     move.columnDest === cutOffMove.columnDest) {
                     move.score = score;
-                    return false;
+                    break;
                 }
-            });
-        });
+            };
+        };
     }
 
     _getBetaMoves(depth) {

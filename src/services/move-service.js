@@ -3,7 +3,6 @@ const cloneDeep = require('lodash/cloneDeep');
 const isUndefined = require('lodash/isUndefined');
 const orderBy = require('lodash/orderBy');
 const each = require('lodash/each');
-const size = require('lodash/size');
 const configs = require('../configurations');
 
 class MoveService {
@@ -142,9 +141,7 @@ class MoveService {
         let piece;
         const colour = this.boardModel.getPieceColour(row, column);
 
-        let knightAvailableMove;
-        for (let i = 0, len = this.knightAvailableMoves.length; i < len; i++) {
-            knightAvailableMove = this.knightAvailableMoves[i];
+        for (let knightAvailableMove of this.knightAvailableMoves) {
             piece = this.boardModel.getPieceByRowColumn(row + knightAvailableMove[0], column + knightAvailableMove[1]);
             if (piece !== configs.pieces.offBoard && (
                 (colour !== this.boardModel.getPieceColour(row + knightAvailableMove[0], column + knightAvailableMove[1])) ||
@@ -164,9 +161,7 @@ class MoveService {
         let indexR;
         let indexC;
 
-        let bishopDirection;
-        for (let i = 0, len = this.bishopDirections.length; i < len; i++) {
-            bishopDirection = this.bishopDirections[i];
+        for (let bishopDirection of this.bishopDirections) {
             for (indexR = row + bishopDirection[0], indexC = column + bishopDirection[1];
                 indexR >= 8 || indexC >= 8 || indexR <= 8 || indexC <= 8;
                 indexR += bishopDirection[0], indexC += bishopDirection[1]) {
@@ -191,9 +186,7 @@ class MoveService {
         let indexR;
         let indexC;
 
-        let rookDirection;
-        for (let i = 0, len = this.rookDirections.length; i < len; i++) {
-            rookDirection = this.rookDirections[i];
+        for (let rookDirection of this.rookDirections) {
             for (indexR = row + rookDirection[0], indexC = column + rookDirection[1];
                 indexR >= 8 || indexC >= 8 || indexR <= 8 || indexC <= 8;
                 indexR += rookDirection[0], indexC += rookDirection[1]) {
@@ -218,9 +211,7 @@ class MoveService {
         const color = this.boardModel.getPieceColour(row, column);
         let castleFlags;
 
-        let kingAvailableMove;
-        for (let i = 0, len = this.kingAvailableMoves.length; i < len; i++) {
-            kingAvailableMove = this.kingAvailableMoves[i];
+        for(let kingAvailableMove of this.kingAvailableMoves) {
             piece = this.boardModel.getPieceByRowColumn(row + kingAvailableMove[0], column + kingAvailableMove[1]);
             if (piece !== configs.pieces.offBoard && (
                 (color !== this.boardModel.getPieceColour(row + kingAvailableMove[0], column + kingAvailableMove[1])) ||
@@ -233,18 +224,30 @@ class MoveService {
         //castle moves
         castleFlags = this.boardModel.getCastleFlags()[color];
         if (castleFlags.kingSide) {
-            if (!this._isSquareAttacked(row, column) &&
+            if (
+                !this._isSquareAttacked(row, column) &&
                 this.boardModel.getPieceByRowColumn(row, column + 1) === configs.pieces.empty && !this._isSquareAttacked(row, column + 1, color) &&
-                this.boardModel.getPieceByRowColumn(row, column + 2) === configs.pieces.empty && !this._isSquareAttacked(row, column + 2, color)) {
+                this.boardModel.getPieceByRowColumn(row, column + 2) === configs.pieces.empty && !this._isSquareAttacked(row, column + 2, color) &&
+                (
+                    (this.boardModel.getPieceByRowColumn(row, column + 3) === configs.pieces.wR && color === configs.colors.white) || 
+                    (this.boardModel.getPieceByRowColumn(row, column + 3) === configs.pieces.bR && color === configs.colors.black)
+                ) 
+            ) {
                 flag = (color === configs.colors.white) ? configs.flags.whiteKingCastle : configs.flags.blackKingCastle;
                 moves.push([row, column + 2, flag]);
             }
         }
 
         if (castleFlags.queenSide) {
-            if (this.boardModel.getPieceByRowColumn(row, column - 1) === configs.pieces.empty && !this._isSquareAttacked(row, column - 1, color) &&
+            if (
+                this.boardModel.getPieceByRowColumn(row, column - 1) === configs.pieces.empty && !this._isSquareAttacked(row, column - 1, color) &&
                 this.boardModel.getPieceByRowColumn(row, column - 2) === configs.pieces.empty && !this._isSquareAttacked(row, column - 2, color) &&
-                this.boardModel.getPieceByRowColumn(row, column - 3) === configs.pieces.empty && !this._isSquareAttacked(row, column - 3, color)) {
+                this.boardModel.getPieceByRowColumn(row, column - 3) === configs.pieces.empty && !this._isSquareAttacked(row, column - 3, color) &&
+                (
+                    (this.boardModel.getPieceByRowColumn(row, column - 4) === configs.pieces.wR && color === configs.colors.white) || 
+                    (this.boardModel.getPieceByRowColumn(row, column - 4) === configs.pieces.bR && color === configs.colors.black)
+                )
+            ) {
                 flag = (color === configs.colors.white) ? configs.flags.whiteQueenCastle : configs.flags.blackQueenCastle;
                 moves.push([row, column - 2, flag]);
             }
@@ -286,9 +289,7 @@ class MoveService {
                 break;
         }
 
-        let pieceMove;
-        for (let i = 0, len = pieceMoves.length; i < len; i++) {
-            pieceMove = pieceMoves[i]
+        for (let pieceMove of pieceMoves) {
             flag = (typeof pieceMove[2] !== 'undefined') ? pieceMove[2] : null;
             move = {
                 piece: piece,
@@ -314,10 +315,8 @@ class MoveService {
         let piece = this.boardModel.getPieceByRowColumn(row, column);
         let side;
         let colour;
-        let index;
         let indexR;
         let indexC;
-        let arrayLength;
 
         if (piece === configs.pieces.offBoard) {
             return false;
@@ -355,19 +354,19 @@ class MoveService {
         }
 
         //knight attack moves
-        for (index = 0, arrayLength = this.knightAvailableMoves.length; index < arrayLength; index += 1) {
-            piece = this.boardModel.getPieceByRowColumn(row + this.knightAvailableMoves[index][0], column + this.knightAvailableMoves[index][1]);
+        for (let move of this.knightAvailableMoves) {
+            piece = this.boardModel.getPieceByRowColumn(row + move[0], column + move[1]);
             if ((piece === configs.pieces.wN || piece === configs.pieces.bN) &&
-                colour !== this.boardModel.getPieceColour(row + this.knightAvailableMoves[index][0], column + this.knightAvailableMoves[index][1])) {
+                colour !== this.boardModel.getPieceColour(row + move[0], column + move[1])) {
                 return true;
             }
         }
 
         //bishop and queen attack moves
-        for (index = 0, arrayLength = this.bishopDirections.length; index < arrayLength; index += 1) {
-            for (indexR = row + this.bishopDirections[index][0], indexC = column + this.bishopDirections[index][1];
+        for (let move of this.bishopDirections) {
+            for (indexR = row + move[0], indexC = column + move[1];
                 indexR >= 8 || indexC >= 8 || indexR <= 8 || indexC <= 8;
-                indexR += this.bishopDirections[index][0], indexC += this.bishopDirections[index][1]) {
+                indexR += move[0], indexC += move[1]) {
                 piece = this.boardModel.getPieceByRowColumn(indexR, indexC);
                 if ((piece === configs.pieces.wB || piece === configs.pieces.bB ||
                     piece === configs.pieces.wQ || piece === configs.pieces.bQ) &&
@@ -381,10 +380,10 @@ class MoveService {
         }
 
         //rook and queen attack moves
-        for (index = 0, arrayLength = this.rookDirections.length; index < arrayLength; index += 1) {
-            for (indexR = row + this.rookDirections[index][0], indexC = column + this.rookDirections[index][1];
+        for (let move of this.rookDirections) {
+            for (indexR = row + move[0], indexC = column + move[1];
                 indexR >= 8 || indexC >= 8 || indexR <= 8 || indexC <= 8;
-                indexR += this.rookDirections[index][0], indexC += this.rookDirections[index][1]) {
+                indexR += move[0], indexC += move[1]) {
                 piece = this.boardModel.getPieceByRowColumn(indexR, indexC);
                 if ((piece === configs.pieces.wR || piece === configs.pieces.bR ||
                     piece === configs.pieces.wQ || piece === configs.pieces.bQ) &&
@@ -398,10 +397,10 @@ class MoveService {
         }
 
         //king attack moves
-        for (index = 0, arrayLength = this.kingAvailableMoves.length; index < arrayLength; index += 1) {
-            piece = this.boardModel.getPieceByRowColumn(row + this.kingAvailableMoves[index][0], column + this.kingAvailableMoves[index][1]);
+        for (let move of this.kingAvailableMoves) {
+            piece = this.boardModel.getPieceByRowColumn(row + move[0], column + move[1]);
             if ((piece === configs.pieces.wK || piece === configs.pieces.bK) &&
-                colour !== this.boardModel.getPieceColour(row + this.kingAvailableMoves[index][0], column + this.kingAvailableMoves[index][1])) {
+                colour !== this.boardModel.getPieceColour(row + move[0], column + move[1])) {
                 return true;
             }
         }
@@ -488,13 +487,9 @@ class MoveService {
 
     generateAllCaptureMoves(board, side) {
         const moves = this.generateAllMoves(board, side);
-        let move;
-        let index;
         const captureMoves = [];
-        let movesLength;
 
-        for (index = 0, movesLength = moves.length; index < movesLength; index += 1) {
-            move = moves[index];
+        for (let move of moves) {
             if (this.boardModel.isEmpty(move.rowDest, move.columnDest)) {
                 continue;
             }
@@ -544,14 +539,6 @@ class MoveService {
 
     setBoardModel(board) {
         this.boardModel = board;
-    }
-
-    getGeneratedMovesCount() {
-        return size(this.generatedMoves);
-    }
-
-    getGeneratedMovesUses() {
-        return this.generatedMovesUses;
     }
 
     rollback() {

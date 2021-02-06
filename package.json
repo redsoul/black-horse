@@ -1,7 +1,7 @@
 {
   "main": "engine.js",
   "name": "black-horse",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Chess engine built in NodeJS using the alpha-beta algorithm",
   "scripts": {
     "test": "jest",
@@ -26,16 +26,21 @@
     "artificial intelligence"
   ],
   "devDependencies": {
+    "eslint": "^7.19.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-prettier": "^3.3.1",
     "gulp": "^4.0.2",
     "gulp-eslint": "^3.0.1",
     "jest": "^24.9.0",
-    "measure-time": "^5.0.1"
+    "measure-time": "^5.0.1",
+    "prettier": "^2.2.1"
   },
   "dependencies": {
     "lodash": "^4.17.20",
     "semver": "^5.7.1"
   },
   "engines": {
-    "node": ">=6"
+    "node": ">=12"
   }
 }

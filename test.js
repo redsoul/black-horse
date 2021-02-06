@@ -1,9 +1,15 @@
 const engine = require ('./engine');
 
 engine.initBoard();
-engine.parseFEN('3rq1k1/pp5p/6p1/5p2/8/1PQ3PP/P4P2/2R3K1 b - - 0 25');
-engine.configs.moveCacheEnabled = false;
-console.log(engine.searchNextMove({minDepth:6}));
+// console.log(engine.searchNextMove({minDepth:6}));
+// console.log(engine.isCheckMate(0));
+console.log(engine.getPieceValidMoves('b2'))
+// engine.parseFEN('3r2k1/p5p1/Q2n3p/1pq1B3/8/5P2/4R1P1/5K2 b - - 5 39');
+// engine.printBoard();
+// engine.move('c3');
+// engine.printBoard();
+debugger
+// console.log(engine.searchNextMove({minDepth:6}));
 
 /*
 2021-01-31T17:26:56.167Z - Search finished for Depth 6

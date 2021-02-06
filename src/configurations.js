@@ -33,7 +33,7 @@ module.exports = (function () {
         '.': pieces.empty
     };
     const logLevels = {
-        none: 1,
+        info: 1,
         search: 2,
         timeout: 3,
         evaluation: 4
@@ -41,8 +41,6 @@ module.exports = (function () {
 
     return {
         loggingEnabled: true,
-        moveCacheEnabled: false,
-        evaluationCacheEnabled: false,
         currentLogLevel: logLevels.search,
         logStrategy: 'toConsole',
         rowChar: '12345678',

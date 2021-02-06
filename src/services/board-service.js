@@ -4,7 +4,6 @@ const HashService = require('./hash-service.js');
 const NotationService = require('./notation-service.js');
 const BoardModel = require('../models/board-model-8x8.js');
 const configs = require('../configurations');
-const each = require('lodash/each');
 
 class BoardService {
     constructor() {
@@ -170,12 +169,8 @@ class BoardService {
     getPieceValidMoves(row, column) {
         const moves = this.getPieceMoves(row, column);
         const validMoves = [];
-        let index;
-        let move;
-        let movesLength;
 
-        for (index = 0, movesLength = moves.length; index < movesLength; index += 1) {
-            move = moves[index];
+        for (let move of moves) {
             if (this.makeMove(move)) {
                 validMoves.push(move);
                 this.rollbackMove();
@@ -497,14 +492,12 @@ class BoardService {
 
     makeMoveXY(rowOrig, columnOrig, rowDest, columnDest) {
         const pieceMoves = this.getPieceMoves(rowOrig, columnOrig);
-        let index;
         let move;
-        let piecesLength;
 
-        for (index = 0, piecesLength = pieceMoves.length; index < piecesLength; index += 1) {
-            if (pieceMoves[index].rowDest === rowDest &&
-                pieceMoves[index].columnDest === columnDest) {
-                move = pieceMoves[index];
+        for (let pieceMove of pieceMoves) {
+            if (pieceMove.rowDest === rowDest &&
+                pieceMove.columnDest === columnDest) {
+                move = pieceMove;
                 break;
             }
         }
@@ -544,12 +537,8 @@ class BoardService {
         }
 
         const moves = this.generateAllMoves(side);
-        let index;
-        let move;
         let legalMoves = 0;
-        for (index = moves.length - 1; index >= 0; index--) {
-            move = moves[index];
-
+        for (let move of moves) {
             if (!this.makeMove(move)) {
                 continue;
             }
@@ -583,12 +572,12 @@ class BoardService {
         const moves = this.generateAllMoves(side);
         const validMoves = [];
 
-        each(moves, (move) => {
+        for (let move of moves) {
             if (this.makeMove(move)) {
                 validMoves.push(move);
                 this.rollbackMove();
             }
-        });
+        };
 
         return validMoves;
     }

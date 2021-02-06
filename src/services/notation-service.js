@@ -1,9 +1,14 @@
 const configs = require('../configurations');
 const pad = require('lodash/pad');
+const each = require('lodash/each');
 const LoggerService = require('./logger-service.js');
 
 module.exports = class NotationService {
-    
+
+    static files() {
+        return Object.freeze(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']);
+    }
+        
     static convertToFEN(board) {
         let indexR;
         let indexC;
@@ -104,44 +109,119 @@ module.exports = class NotationService {
         LoggerService.log(line);
     }
 
-    static algebraicNotation(pieceOrig, pieceDest, move, moveFlags) {
-        let str = configs.columnChar[move.columnDest - 1] + move.rowDest;
-        let kingCheck = moveFlags.isOppositeKingInCheck ? '+' : '';
-        let promotedPiece;
+    static algebraic(row, column) {
+        return NotationService.files()[column - 1] + row;
+    }
 
-        if (pieceOrig <= configs.pieces.empty || pieceOrig > configs.pieces.bK) {
-            throw new Error('Invalid origin piece');
+    //check for ambiguous moves
+    static disambiguator(validMoves, move) {
+        let ambiguities = 0;
+        let sameRank = 0;
+        let sameFile = 0;
+        each(validMoves, validMove => {
+            if (move.piece === validMove.piece &&
+                move.rowOrig === validMove.rowOrig && move.columnOrig === validMove.columnOrig &&
+                move.rowDest === validMove.rowDest && move.columnDest === validMove.columnDest
+            ) {
+                return;
+            }
+
+            /* if a move of the same piece type ends on the same to square, we'll
+                  * need to add a disambiguator to the algebraic notation
+                  */
+            if (move.piece === validMove.piece &&
+                (move.rowOrig !== validMove.rowOrig || move.columnOrig !== validMove.columnOrig) &&
+                move.rowDest === validMove.rowDest && move.columnDest === validMove.columnDest
+            ) {
+                ambiguities++;
+
+                if (move.rowOrig === validMove.rowOrig) {
+                    sameRank++;
+                }
+
+                if (move.columnOrig === validMove.columnOrig) {
+                    sameFile++;
+                }
+            }
+        });
+
+        if (ambiguities > 0) {
+            /* if there exists a similar moving piece on the same rank and file as
+            * the move in question, use the square as the disambiguator
+            */
+            const algebraicMove = NotationService.algebraic(move.rowOrig, move.columnOrig);
+            if (sameRank > 0 && sameFile > 0) {
+                return algebraicMove;
+            } else if (sameFile > 0) {
+                // if the moving piece rests on the same file, use the rank symbol as the disambiguator
+                return algebraicMove.charAt(1);
+            } else {
+                /* else use the file symbol */
+                return algebraicMove.charAt(0)
+            }
         }
 
-        pieceOrig = configs.fen.invertedPiecesConversion[pieceOrig];
-        if (pieceDest === configs.pieces.empty && !(moveFlags.promotion && move.promotedPiece) && !moveFlags.enPassant && !(moveFlags.castle && (moveFlags.castle[configs.colors.black].kingSide ||
-            moveFlags.castle[configs.colors.white].kingSide ||
-            moveFlags.castle[configs.colors.black].queenSide ||
-            moveFlags.castle[configs.colors.white].queenSide))
-        ) {
-            return ((pieceOrig !== 'P' && pieceOrig !== 'p') ? pieceOrig.toUpperCase() : '') + str + kingCheck;
+        return '';
+    }
+
+    static standartAlgebraicNotation(validMoves, move) {
+        if (!move) {
+            return;
         }
 
-        if (moveFlags.promotion && move.promotedPiece && (move.rowDest === 1 || move.rowDest === 8)) {
-            promotedPiece = configs.fen.invertedPiecesConversion[move.promotedPiece];
-            return str + '=' + promotedPiece.toUpperCase() + kingCheck;
+        if (move.flag === configs.flags.whiteKingCastle || move.flag === configs.flags.blackKingCastle) {
+            return '0-0';
         }
 
-        str = ((pieceOrig !== 'P' && pieceOrig !== 'p') ? pieceOrig.toUpperCase() : 'e') + 'x' + str;
-
-        if (moveFlags.enPassant) {
-            return str + '(ep)' + kingCheck;
+        if (move.flag === configs.flags.whiteQueenCastle || move.flag === configs.flags.blackQueenCastle) {
+            return '0-0-0';
         }
 
-        if (moveFlags.castle && (moveFlags.castle[configs.colors.black].kingSide || moveFlags.castle[configs.colors.white].kingSide)) {
-            return '0-0' + kingCheck;
+        const disambiguation = NotationService.disambiguator(validMoves, move);
+        let san = '';
+
+        if (move.piece !== configs.pieces.bP && move.piece !== configs.pieces.wP) {
+            san += configs.fen.invertedPiecesConversion[move.piece] + disambiguation;
         }
 
-        if (moveFlags.castle && (moveFlags.castle[configs.colors.black].queenSide || moveFlags.castle[configs.colors.white].queenSide)) {
-            return '0-0-0' + kingCheck;
+        if (move.pieceDest !== configs.pieces.empty || move.flag === configs.flags.enPassant) {
+            if (move.piece === configs.pieces.bP || move.piece === configs.pieces.wP) {
+                san += NotationService.algebraic(move.rowOrig, move.columnOrig).charAt(0);
+            }
+            san += 'x';
         }
 
-        return str + kingCheck;
+        san += NotationService.algebraic(move.rowDest, move.columnDest)
+
+        if (move.promotedPiece) {
+            san += '=' + configs.fen.invertedPiecesConversion[move.promotedPiece];
+        }
+
+        if(move.flag === configs.flags.enPassant){
+            san += ' e.p.';  
+        }
+
+        return san;
+    }
+
+    static parseMoveNotation(validMoves, notationMove) {
+        const cleanedMove = notationMove
+            .replace(/=/, '')
+            .replace(/[+#]?[?!]*$/, '');
+        
+        let targetMove = null;
+        each(validMoves, function (move) {
+            if (cleanedMove === NotationService.standartAlgebraicNotation(validMoves, move)) {
+                targetMove = move;
+                return false;
+            }
+        });
+
+        if (!targetMove) {
+            throw Error('Invalid Move!');
+        }
+
+        return targetMove;
     }
 
     static printMoveArray(moves) {

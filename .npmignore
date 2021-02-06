@@ -3,4 +3,6 @@ specs
 node_modules
 .vscode
 gulpfile.js
-.eslintrc.json
+.eslintrc*
+.prettierrc
+test.js

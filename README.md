@@ -101,7 +101,7 @@ console.log(BlackHorseChessEngine.getBoard());
 
 ### getPieceValidMoves(row, column)
 ### getPieceValidMoves(notation)
-Returns an Array of all the valid moves for the piece in the position indicated by the coordinates
+Returns an Array of all the valid moves for the piece in the position indicated by the coordinates or by the Standart Algebraic Notation
 ```Javascript
 console.log(BlackHorseChessEngine.getPieceValidMoves(2, 2)); 
 console.log(BlackHorseChessEngine.getPieceValidMoves('b2')); 
@@ -152,16 +152,18 @@ BlackHorseChessEngine.isCheckMate(1); //true
 #### options
 ```Javascript
 {
-    minDepth: 4,
-    maxSearchTime: 3000
+    minDepth: 4, // min search depth - default 4
+    maxSearchTime: 3000 //max search time spended in seconds - default 3000
 }
 ```
 Search the next move for the current side
 ```Javascript
 BlackHorseChessEngine.initBoard();
-const searchTime = 1000 // max search time spended in milli-seconds - default 1000 (1 second)
-const searchDepth = 10 // max search depth - default 20
-const nextMove = BlackHorseChessEngine.searchNextMove({minDepth:6});
+const searchOptions = {
+  minDepth:6, 
+  maxSearchTime: 1000 
+} 
+const nextMove = BlackHorseChessEngine.searchNextMove(searchOptions);
 /*
 {
     "columnDest": 4,
@@ -177,8 +179,9 @@ const nextMove = BlackHorseChessEngine.searchNextMove({minDepth:6});
 */
 ```
 
-### makeMove(moveObject)
-Search the next move for the current side
+### move(moveObject)
+Search the next move for the current side. 
+Can accept an object with the coordinates and move flag or can accept a string with the Standart Algebraic Notation
 ```Javascript
 console.log(BlackHorseChessEngine.move({
                                    "columnDest": 4,

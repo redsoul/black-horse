@@ -27,7 +27,7 @@ class CutoffService {
     }
 
     _getAlphaMoves(depth) {
-        return this.alphaMoves[depth] || null;
+        return this.alphaMoves[depth] || [];
     }
 
     reset(maxDepth) {

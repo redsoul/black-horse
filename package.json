@@ -33,7 +33,6 @@
     "gulp": "^4.0.2",
     "gulp-eslint": "^3.0.1",
     "jest": "^24.9.0",
-    "measure-time": "^5.0.1",
     "prettier": "^2.2.1"
   },
   "dependencies": {

@@ -54,8 +54,6 @@ module.exports = (() => {
         let moveFlags;
         let boardModel;
         let oppositeKingPosition;
-        let pieceOrig;
-        let pieceDest;
         let pieceColor;
         const validMoves = BoardService.generateAllValidMoves(
             BoardService.getBoard().getSide()
@@ -127,6 +125,16 @@ module.exports = (() => {
         return validMoves;
     }
 
+    function searchNextMove(options) {
+        const nextMove = SearchService.searchNextMove(options);
+        const validMoves = BoardService.generateAllValidMoves(
+            BoardService.getBoard().getSide()
+        );
+        nextMove.algebraicNotation = NotationService.standartAlgebraicNotation(validMoves, nextMove);
+
+        return nextMove;
+    }
+
     return {
         initBoard: BoardService.initBoard.bind(BoardService),
         printBoard: BoardService.printBoard.bind(BoardService),
@@ -134,7 +142,7 @@ module.exports = (() => {
         getBoard,
         getPieceValidMoves,
         isCheckMate: BoardService.isCheckMate.bind(BoardService),
-        searchNextMove: SearchService.searchNextMove.bind(SearchService),
+        searchNextMove,
         move: makeMove,
         getPieceSide,
         configs,

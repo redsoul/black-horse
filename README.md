@@ -166,6 +166,7 @@ const searchOptions = {
 const nextMove = BlackHorseChessEngine.searchNextMove(searchOptions);
 /*
 {
+    "algebraicNotation": "d4",
     "columnDest": 4,
     "columnOrig": 4,
     "piece": 1,

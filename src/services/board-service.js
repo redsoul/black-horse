@@ -244,7 +244,7 @@ class BoardService {
 	}
 
 	_removeFromPieceList(row, column) {
-		const piece = this.boardModel.getPieceByRowColumn(row, column);
+		const piece = this.boardModel.getPiece(row, column);
 		const side = this.boardModel.getPieceColour(row, column);
 		if (piece !== configs.pieces.empty) {
 			this.boardModel.getPieceList(side).remove(row + '' + column);
@@ -288,12 +288,12 @@ class BoardService {
 						castleFlags[configs.colors.white].kingSide &&
 						rowDest === 1 &&
 						columnDest === 7 &&
-						this.boardModel.getPieceByRowColumn(1, 8) === configs.pieces.wR
+						this.boardModel.getPiece(1, 8) === configs.pieces.wR
 					) {
-						rook = this.boardModel.getPieceByRowColumn(1, 8);
+						rook = this.boardModel.getPiece(1, 8);
 						this._hashPiece(rook, 1, 8);
 						this._hashPiece(rook, 1, 6);
-						this._updatePieceList(rook, this.boardModel.getPieceByRowColumn(1, 6), 1, 8, 1, 6);
+						this._updatePieceList(rook, this.boardModel.getPiece(1, 6), 1, 8, 1, 6);
 						this.boardModel.setPieceByRowColumn(1, 6, rook);
 						this.boardModel.setPieceByRowColumn(1, 8, configs.pieces.empty);
 						flags[configs.colors.white].kingSide = true;
@@ -301,12 +301,12 @@ class BoardService {
 						castleFlags[configs.colors.white].queenSide &&
 						rowDest === 1 &&
 						columnDest === 3 &&
-						this.boardModel.getPieceByRowColumn(1, 1) === configs.pieces.wR
+						this.boardModel.getPiece(1, 1) === configs.pieces.wR
 					) {
-						rook = this.boardModel.getPieceByRowColumn(1, 1);
+						rook = this.boardModel.getPiece(1, 1);
 						this._hashPiece(rook, 1, 1);
 						this._hashPiece(rook, 1, 4);
-						this._updatePieceList(rook, this.boardModel.getPieceByRowColumn(1, 4), 1, 1, 1, 4);
+						this._updatePieceList(rook, this.boardModel.getPiece(1, 4), 1, 1, 1, 4);
 						this.boardModel.setPieceByRowColumn(1, 4, rook);
 						this.boardModel.setPieceByRowColumn(1, 1, configs.pieces.empty);
 						flags[configs.colors.white].queenSide = true;
@@ -324,12 +324,12 @@ class BoardService {
 						castleFlags[configs.colors.black].kingSide &&
 						rowDest === 8 &&
 						columnDest === 7 &&
-						this.boardModel.getPieceByRowColumn(8, 8) === configs.pieces.bR
+						this.boardModel.getPiece(8, 8) === configs.pieces.bR
 					) {
-						rook = this.boardModel.getPieceByRowColumn(8, 8);
+						rook = this.boardModel.getPiece(8, 8);
 						this._hashPiece(rook, 8, 8);
 						this._hashPiece(rook, 8, 6);
-						this._updatePieceList(rook, this.boardModel.getPieceByRowColumn(8, 6), 8, 8, 8, 6);
+						this._updatePieceList(rook, this.boardModel.getPiece(8, 6), 8, 8, 8, 6);
 						this.boardModel.setPieceByRowColumn(8, 6, rook);
 						this.boardModel.setPieceByRowColumn(8, 8, configs.pieces.empty);
 						flags[configs.colors.black].kingSide = true;
@@ -337,12 +337,12 @@ class BoardService {
 						castleFlags[configs.colors.black].queenSide &&
 						rowDest === 8 &&
 						columnDest === 3 &&
-						this.boardModel.getPieceByRowColumn(8, 1) === configs.pieces.bR
+						this.boardModel.getPiece(8, 1) === configs.pieces.bR
 					) {
-						rook = this.boardModel.getPieceByRowColumn(8, 1);
+						rook = this.boardModel.getPiece(8, 1);
 						this._hashPiece(rook, 8, 1);
 						this._hashPiece(rook, 8, 4);
-						this._updatePieceList(rook, this.boardModel.getPieceByRowColumn(8, 4), 8, 1, 8, 4);
+						this._updatePieceList(rook, this.boardModel.getPiece(8, 4), 8, 1, 8, 4);
 						this.boardModel.setPieceByRowColumn(8, 4, rook);
 						this.boardModel.setPieceByRowColumn(8, 1, configs.pieces.empty);
 						flags[configs.colors.black].queenSide = true;
@@ -412,7 +412,7 @@ class BoardService {
 		enPassantPosition = this.boardModel.getEnPassantPosition();
 		if (move.flag === configs.flags.enPassant && enPassantPosition) {
 			const enPassantPiecePos = [enPassantPosition[0] - side, enPassantPosition[1]];
-			enPassantPiece = this.boardModel.getPieceByRowColumn(enPassantPiecePos[0], enPassantPiecePos[1]);
+			enPassantPiece = this.boardModel.getPiece(enPassantPiecePos[0], enPassantPiecePos[1]);
 			this.boardModel.decrementPieceCounter(enPassantPiece);
 			this.boardModel.addLostPiece(enPassantPiecePos[0], enPassantPiecePos[1]);
 			this._updateMaterial(enPassantPiece, false);

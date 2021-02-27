@@ -66,7 +66,7 @@ module.exports = class BaseBoardModel {
 		}
 	}
 
-	getPieceByRowColumn(row, col) {
+	getPiece(row, col) {
 		// eslint-disable-line no-unused-vars
 	}
 
@@ -114,7 +114,7 @@ module.exports = class BaseBoardModel {
 	}
 
 	isEmpty(row, column) {
-		return this.getPieceByRowColumn(row, column) === configs.pieces.empty;
+		return this.getPiece(row, column) === configs.pieces.empty;
 	}
 
 	getKingPosition(side) {
@@ -170,7 +170,7 @@ module.exports = class BaseBoardModel {
 
 		for (indexRow = 8; indexRow >= 1; indexRow--) {
 			for (indexCol = 1; indexCol <= 8; indexCol++) {
-				board[8 - indexRow][indexCol - 1] = this.getPieceByRowColumn(indexRow, indexCol);
+				board[8 - indexRow][indexCol - 1] = this.getPiece(indexRow, indexCol);
 			}
 		}
 
@@ -185,11 +185,11 @@ module.exports = class BaseBoardModel {
 			}
 			return indexOf(configs.whitePieces, piece) >= 0 ? configs.colors.white : configs.colors.black;
 		}
-		return this.getPieceColour(this.getPieceByRowColumn(arguments[0], arguments[1]));
+		return this.getPieceColour(this.getPiece(arguments[0], arguments[1]));
 	}
 
 	addLostPiece() {
-		const piece = arguments.length === 1 ? arguments[0] : this.getPieceByRowColumn(arguments[0], arguments[1]);
+		const piece = arguments.length === 1 ? arguments[0] : this.getPiece(arguments[0], arguments[1]);
 		this.capturedPieces[this.getPieceColour(piece)].push(piece);
 	}
 

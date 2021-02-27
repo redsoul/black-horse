@@ -34,8 +34,8 @@ class MvvLvaService {
 	}
 
 	getScore(boardModel, move) {
-		const pieceOrig = boardModel.getPieceByRowColumn(move.rowOrig, move.columnOrig);
-		const pieceDest = move.flag === configs.flags.enPassant ? 1 : boardModel.getPieceByRowColumn(move.rowDest, move.columnDest);
+		const pieceOrig = boardModel.getPiece(move.rowOrig, move.columnOrig);
+		const pieceDest = move.flag === configs.flags.enPassant ? 1 : boardModel.getPiece(move.rowDest, move.columnDest);
 
 		if (pieceDest !== configs.pieces.empty) {
 			return this.mvvLvaScore[pieceDest * 14 + pieceOrig] + 1000000;

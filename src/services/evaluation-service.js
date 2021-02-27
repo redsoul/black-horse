@@ -100,7 +100,7 @@ class EvaluationService {
 		const traverseCallback = (key, value) => {
 			row = value.row;
 			column = value.column;
-			piece = boardModel.getPieceByRowColumn(row, column);
+			piece = boardModel.getPiece(row, column);
 
 			pieceColour = boardModel.getPieceColour(piece);
 			signal = pieceColour === configs.colors.white ? 1 : -1;
@@ -134,7 +134,7 @@ class EvaluationService {
 				currentMove.flag === configs.flags.whiteKingCastle ||
 				currentMove.flag === configs.flags.whiteQueenCastle)
 		) {
-			piece = boardModel.getPieceByRowColumn(currentMove.rowDest, currentMove.columnDest);
+			piece = boardModel.getPiece(currentMove.rowDest, currentMove.columnDest);
 			pieceColour = boardModel.getPieceColour(piece);
 			signal = pieceColour === configs.colors.white ? 1 : -1;
 

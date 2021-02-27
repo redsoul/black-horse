@@ -5,7 +5,7 @@
   "description": "Chess engine built in NodeJS using the alpha-beta algorithm",
   "scripts": {
     "test": "jest",
-    "lint": "./node_modules/.bin/eslint src/*",
+    "lint": "./node_modules/.bin/eslint specs/* src/* engine.js",
     "postinstall": "node checkVersion.js"
   },
   "repository": {
@@ -26,6 +26,7 @@
     "artificial intelligence"
   ],
   "devDependencies": {
+    "babel-eslint": "^10.1.0",
     "eslint": "^7.19.0",
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-prettier": "^3.3.1",

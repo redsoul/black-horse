@@ -229,14 +229,14 @@ class SearchService {
 					}
 
 					this.failHigh += 1;
-					if (board.getPieceByRowColumn(move.rowDest, move.columnDest) === configs.pieces.empty) {
+					if (board.getPiece(move.rowDest, move.columnDest) === configs.pieces.empty) {
 						this.CutoffService.storeBetaMove(move, currentDepth);
 					}
 
 					return beta;
 				}
 
-				if (bestMove && board.getPieceByRowColumn(move.rowDest, move.columnDest) === configs.pieces.empty) {
+				if (bestMove && board.getPiece(move.rowDest, move.columnDest) === configs.pieces.empty) {
 					this.CutoffService.storeAlphaMove(move, currentDepth);
 				}
 

@@ -25,8 +25,8 @@ module.exports = (() => {
 		});
 
 		if (isValid) {
-			move.piece = board.getPieceByRowColumn(move.rowOrig, move.columnOrig);
-			move.pieceDest = board.getPieceByRowColumn(move.rowDest, move.columnDest);
+			move.piece = board.getPiece(move.rowOrig, move.columnOrig);
+			move.pieceDest = board.getPiece(move.rowDest, move.columnDest);
 			move.side = board.getPieceColour(move.piece);
 			return move;
 		} else {
@@ -60,8 +60,8 @@ module.exports = (() => {
 			jsonObj.isCheckMate = false;
 			jsonObj.algebraicNotation = null;
 			boardModel = BoardService.getBoard();
-			pieceOrig = boardModel.getPieceByRowColumn(move.rowOrig, move.columnOrig);
-			pieceDest = boardModel.getPieceByRowColumn(move.rowDest, move.columnDest);
+			pieceOrig = boardModel.getPiece(move.rowOrig, move.columnOrig);
+			pieceDest = boardModel.getPiece(move.rowDest, move.columnDest);
 			pieceColor = boardModel.getPieceColour(move.rowOrig, move.columnOrig);
 			moveFlags = BoardService.makeMove(move);
 

@@ -178,7 +178,7 @@ module.exports = class BoardModel extends BaseBoardModel {
 		this.board[8 - row][column - 1] = piece;
 	}
 
-	getPieceByRowColumn(row, column) {
+	getPiece(row, column) {
 		if (row > 8 || column > 8 || row < 1 || column < 1) {
 			return configs.pieces.offBoard;
 		}

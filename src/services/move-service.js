@@ -79,15 +79,15 @@ class MoveService {
 
 	_pawnMoves(row, column) {
 		let moves = [];
-		const piece = this.boardModel.getPieceByRowColumn(row, column);
+		const piece = this.boardModel.getPiece(row, column);
 		const color = this.boardModel.getPieceColour(piece);
 		const side = color === configs.colors.white ? 1 : -1;
 		let enPassantPosition;
 
 		//attack right
 		if (
-			this.boardModel.getPieceByRowColumn(row + side, column + 1) !== configs.pieces.empty &&
-			this.boardModel.getPieceByRowColumn(row + side, column + 1) !== configs.pieces.offBoard &&
+			this.boardModel.getPiece(row + side, column + 1) !== configs.pieces.empty &&
+			this.boardModel.getPiece(row + side, column + 1) !== configs.pieces.offBoard &&
 			color !== this.boardModel.getPieceColour(row + side, column + 1)
 		) {
 			moves = moves.concat(this._checkPawnPromotion(row, [row + side, column + 1], color));
@@ -95,8 +95,8 @@ class MoveService {
 
 		//attack left
 		if (
-			this.boardModel.getPieceByRowColumn(row + side, column - 1) !== configs.pieces.empty &&
-			this.boardModel.getPieceByRowColumn(row + side, column - 1) !== configs.pieces.offBoard &&
+			this.boardModel.getPiece(row + side, column - 1) !== configs.pieces.empty &&
+			this.boardModel.getPiece(row + side, column - 1) !== configs.pieces.offBoard &&
 			color !== this.boardModel.getPieceColour(row + side, column - 1)
 		) {
 			moves = moves.concat(this._checkPawnPromotion(row, [row + side, column - 1], color));
@@ -104,19 +104,19 @@ class MoveService {
 
 		//move 1 square
 		if (
-			this.boardModel.getPieceByRowColumn(row + side, column) === configs.pieces.empty &&
-			this.boardModel.getPieceByRowColumn(row + side, column) !== configs.pieces.offBoard
+			this.boardModel.getPiece(row + side, column) === configs.pieces.empty &&
+			this.boardModel.getPiece(row + side, column) !== configs.pieces.offBoard
 		) {
 			moves = moves.concat(this._checkPawnPromotion(row, [row + side, column], color));
 		}
 
 		//move 2 squares
 		if (
-			this.boardModel.getPieceByRowColumn(row + side, column) === configs.pieces.empty &&
-			this.boardModel.getPieceByRowColumn(row + 2 * side, column) === configs.pieces.empty &&
-			this.boardModel.getPieceByRowColumn(row + side, column) !== configs.pieces.offBoard &&
-			this.boardModel.getPieceByRowColumn(row + 2 * side, column) !== configs.pieces.offBoard &&
-			this.boardModel.getPieceByRowColumn(row - 2 * side, column) === configs.pieces.offBoard
+			this.boardModel.getPiece(row + side, column) === configs.pieces.empty &&
+			this.boardModel.getPiece(row + 2 * side, column) === configs.pieces.empty &&
+			this.boardModel.getPiece(row + side, column) !== configs.pieces.offBoard &&
+			this.boardModel.getPiece(row + 2 * side, column) !== configs.pieces.offBoard &&
+			this.boardModel.getPiece(row - 2 * side, column) === configs.pieces.offBoard
 		) {
 			moves.push([row + 2 * side, column]);
 		}
@@ -140,7 +140,7 @@ class MoveService {
 		const colour = this.boardModel.getPieceColour(row, column);
 
 		for (let knightAvailableMove of this.knightAvailableMoves) {
-			piece = this.boardModel.getPieceByRowColumn(row + knightAvailableMove[0], column + knightAvailableMove[1]);
+			piece = this.boardModel.getPiece(row + knightAvailableMove[0], column + knightAvailableMove[1]);
 			if (
 				piece !== configs.pieces.offBoard &&
 				(colour !== this.boardModel.getPieceColour(row + knightAvailableMove[0], column + knightAvailableMove[1]) ||
@@ -166,7 +166,7 @@ class MoveService {
 				indexR >= 8 || indexC >= 8 || indexR <= 8 || indexC <= 8;
 				indexR += bishopDirection[0], indexC += bishopDirection[1]
 			) {
-				piece = this.boardModel.getPieceByRowColumn(indexR, indexC);
+				piece = this.boardModel.getPiece(indexR, indexC);
 				if (
 					piece !== configs.pieces.offBoard &&
 					(colour !== this.boardModel.getPieceColour(indexR, indexC) || piece === configs.pieces.empty)
@@ -195,7 +195,7 @@ class MoveService {
 				indexR >= 8 || indexC >= 8 || indexR <= 8 || indexC <= 8;
 				indexR += rookDirection[0], indexC += rookDirection[1]
 			) {
-				piece = this.boardModel.getPieceByRowColumn(indexR, indexC);
+				piece = this.boardModel.getPiece(indexR, indexC);
 				if (
 					piece !== configs.pieces.offBoard &&
 					(colour !== this.boardModel.getPieceColour(indexR, indexC) || piece === configs.pieces.empty)
@@ -219,7 +219,7 @@ class MoveService {
 		let castleFlags;
 
 		for (let kingAvailableMove of this.kingAvailableMoves) {
-			piece = this.boardModel.getPieceByRowColumn(row + kingAvailableMove[0], column + kingAvailableMove[1]);
+			piece = this.boardModel.getPiece(row + kingAvailableMove[0], column + kingAvailableMove[1]);
 			if (
 				piece !== configs.pieces.offBoard &&
 				(color !== this.boardModel.getPieceColour(row + kingAvailableMove[0], column + kingAvailableMove[1]) ||
@@ -234,12 +234,12 @@ class MoveService {
 		if (castleFlags.kingSide) {
 			if (
 				!this._isSquareAttacked(row, column) &&
-				this.boardModel.getPieceByRowColumn(row, column + 1) === configs.pieces.empty &&
+				this.boardModel.getPiece(row, column + 1) === configs.pieces.empty &&
 				!this._isSquareAttacked(row, column + 1, color) &&
-				this.boardModel.getPieceByRowColumn(row, column + 2) === configs.pieces.empty &&
+				this.boardModel.getPiece(row, column + 2) === configs.pieces.empty &&
 				!this._isSquareAttacked(row, column + 2, color) &&
-				((this.boardModel.getPieceByRowColumn(row, column + 3) === configs.pieces.wR && color === configs.colors.white) ||
-					(this.boardModel.getPieceByRowColumn(row, column + 3) === configs.pieces.bR && color === configs.colors.black))
+				((this.boardModel.getPiece(row, column + 3) === configs.pieces.wR && color === configs.colors.white) ||
+					(this.boardModel.getPiece(row, column + 3) === configs.pieces.bR && color === configs.colors.black))
 			) {
 				flag = color === configs.colors.white ? configs.flags.whiteKingCastle : configs.flags.blackKingCastle;
 				moves.push([row, column + 2, flag]);
@@ -248,14 +248,14 @@ class MoveService {
 
 		if (castleFlags.queenSide) {
 			if (
-				this.boardModel.getPieceByRowColumn(row, column - 1) === configs.pieces.empty &&
+				this.boardModel.getPiece(row, column - 1) === configs.pieces.empty &&
 				!this._isSquareAttacked(row, column - 1, color) &&
-				this.boardModel.getPieceByRowColumn(row, column - 2) === configs.pieces.empty &&
+				this.boardModel.getPiece(row, column - 2) === configs.pieces.empty &&
 				!this._isSquareAttacked(row, column - 2, color) &&
-				this.boardModel.getPieceByRowColumn(row, column - 3) === configs.pieces.empty &&
+				this.boardModel.getPiece(row, column - 3) === configs.pieces.empty &&
 				!this._isSquareAttacked(row, column - 3, color) &&
-				((this.boardModel.getPieceByRowColumn(row, column - 4) === configs.pieces.wR && color === configs.colors.white) ||
-					(this.boardModel.getPieceByRowColumn(row, column - 4) === configs.pieces.bR && color === configs.colors.black))
+				((this.boardModel.getPiece(row, column - 4) === configs.pieces.wR && color === configs.colors.white) ||
+					(this.boardModel.getPiece(row, column - 4) === configs.pieces.bR && color === configs.colors.black))
 			) {
 				flag = color === configs.colors.white ? configs.flags.whiteQueenCastle : configs.flags.blackQueenCastle;
 				moves.push([row, column - 2, flag]);
@@ -265,7 +265,7 @@ class MoveService {
 	}
 
 	_getPieceMoves(row, column) {
-		const piece = this.boardModel.getPieceByRowColumn(row, column);
+		const piece = this.boardModel.getPiece(row, column);
 		let pieceMoves = [];
 		const moves = [];
 		let flag;
@@ -302,7 +302,7 @@ class MoveService {
 			flag = typeof pieceMove[2] !== 'undefined' ? pieceMove[2] : null;
 			move = {
 				piece: piece,
-				pieceDest: this.boardModel.getPieceByRowColumn(pieceMove[0], pieceMove[1]),
+				pieceDest: this.boardModel.getPiece(pieceMove[0], pieceMove[1]),
 				side: this.boardModel.getPieceColour(piece),
 				rowOrig: row,
 				columnOrig: column,
@@ -321,7 +321,7 @@ class MoveService {
 	}
 
 	_isSquareAttacked(row, column, squareSide) {
-		let piece = this.boardModel.getPieceByRowColumn(row, column);
+		let piece = this.boardModel.getPiece(row, column);
 		let side;
 		let colour;
 		let indexR;
@@ -348,20 +348,20 @@ class MoveService {
 		}
 
 		//pawn attack right
-		piece = this.boardModel.getPieceByRowColumn(row + side, column + 1);
+		piece = this.boardModel.getPiece(row + side, column + 1);
 		if ((piece === configs.pieces.wP || piece === configs.pieces.bP) && colour !== this.boardModel.getPieceColour(row + side, column + 1)) {
 			return true;
 		}
 
 		//pawn attack left
-		piece = this.boardModel.getPieceByRowColumn(row + side, column - 1);
+		piece = this.boardModel.getPiece(row + side, column - 1);
 		if ((piece === configs.pieces.wP || piece === configs.pieces.bP) && colour !== this.boardModel.getPieceColour(row + side, column - 1)) {
 			return true;
 		}
 
 		//knight attack moves
 		for (let move of this.knightAvailableMoves) {
-			piece = this.boardModel.getPieceByRowColumn(row + move[0], column + move[1]);
+			piece = this.boardModel.getPiece(row + move[0], column + move[1]);
 			if (
 				(piece === configs.pieces.wN || piece === configs.pieces.bN) &&
 				colour !== this.boardModel.getPieceColour(row + move[0], column + move[1])
@@ -377,7 +377,7 @@ class MoveService {
 				indexR >= 8 || indexC >= 8 || indexR <= 8 || indexC <= 8;
 				indexR += move[0], indexC += move[1]
 			) {
-				piece = this.boardModel.getPieceByRowColumn(indexR, indexC);
+				piece = this.boardModel.getPiece(indexR, indexC);
 				if (
 					(piece === configs.pieces.wB || piece === configs.pieces.bB || piece === configs.pieces.wQ || piece === configs.pieces.bQ) &&
 					colour !== this.boardModel.getPieceColour(indexR, indexC)
@@ -397,7 +397,7 @@ class MoveService {
 				indexR >= 8 || indexC >= 8 || indexR <= 8 || indexC <= 8;
 				indexR += move[0], indexC += move[1]
 			) {
-				piece = this.boardModel.getPieceByRowColumn(indexR, indexC);
+				piece = this.boardModel.getPiece(indexR, indexC);
 				if (
 					(piece === configs.pieces.wR || piece === configs.pieces.bR || piece === configs.pieces.wQ || piece === configs.pieces.bQ) &&
 					colour !== this.boardModel.getPieceColour(indexR, indexC)
@@ -412,7 +412,7 @@ class MoveService {
 
 		//king attack moves
 		for (let move of this.kingAvailableMoves) {
-			piece = this.boardModel.getPieceByRowColumn(row + move[0], column + move[1]);
+			piece = this.boardModel.getPiece(row + move[0], column + move[1]);
 			if (
 				(piece === configs.pieces.wK || piece === configs.pieces.bK) &&
 				colour !== this.boardModel.getPieceColour(row + move[0], column + move[1])
@@ -477,7 +477,7 @@ class MoveService {
 
 	isPieceSecure(board, row, column) {
 		const boardCopy = cloneDeep(board);
-		const piece = board.getPieceByRowColumn(row, column);
+		const piece = board.getPiece(row, column);
 		if (piece === configs.pieces.empty) {
 			return false;
 		}

@@ -5,7 +5,6 @@ const configs = require('../../src/configurations');
 describe('SearchService', function () {
 	const searchService = SearchService;
 	const boardService = BoardService;
-	const searchTime = 1;
 	const searchDepth = 2;
 	const searchOptions = { minDepth: searchDepth };
 
@@ -50,7 +49,6 @@ describe('SearchService', function () {
 
 		beforeEach(function () {
 			configs.currentLogLevel = configs.logLevels.search;
-			configs.moveCacheEnabled = false;
 		});
 
 		test('King and 2 Pawns against King and Pawn', function () {

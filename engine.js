@@ -74,7 +74,7 @@ module.exports = (() => {
 				moveFlags.isOppositeKingInCheck = BoardService.isPieceAttacked(oppositeKingPosition[0], oppositeKingPosition[1]);
 				jsonObj.algebraicNotation = NotationService.standartAlgebraicNotation(validMoves, move);
 
-				if (BoardService.isCheckMate(boardModel.getSide() ^ 1)) {
+				if (BoardService.isCheckMate(boardModel.getSide())) {
 					jsonObj.isCheckMate = true;
 					jsonObj.ckeckMateWinSide = boardModel.getSide();
 				}

@@ -586,7 +586,6 @@ describe('Move Service', function () {
 
 		beforeEach(function () {
 			configs.evaluationCacheEnabled = false;
-			configs.moveCacheEnabled = false;
 		});
 
 		for (index = 0; index < perftTests.length; index++) {

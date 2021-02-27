@@ -1,9 +1,7 @@
 const engine = require('../engine.js');
 const keys = require('lodash/keys');
-const { configs } = require('../engine.js');
 
-engine.configs.loggingEnabled = true;
-engine.configs.currentLogLevel = engine.configs.logLevels.info;
+engine.configs.loggingEnabled = false;
 
 describe('Engine', function () {
 	test('check exposed methods', () => {
@@ -57,8 +55,8 @@ describe('Engine', function () {
 	test('integration test #2', () => {
 		engine.initBoard();
 		expect(engine.searchNextMove({ minDepth: 6 })).toMatchObject({
-			columnDest: 4,
-			columnOrig: 4,
+			columnDest: 5,
+			columnOrig: 5,
 			piece: 1,
 			pieceDest: 0,
 			promotedPiece: null,
@@ -72,7 +70,7 @@ describe('Engine', function () {
 
 	test('integration test #3', () => {
 		engine.parseFEN('7k/1R6/2Q5/8/8/8/8/7K w - - 0 1');
-		const nextMove = engine.searchNextMove({ minDepth: 2 });
+		const nextMove = engine.searchNextMove({ minDepth: 4 });
 		const result = engine.move(nextMove);
 
 		expect(result).toMatchObject({

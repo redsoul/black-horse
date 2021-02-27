@@ -6,7 +6,18 @@
         "prettier"
     ],
     "rules": {
-        "prettier/prettier": "error"
+        "prettier/prettier": "error",
+        "max-len": [
+            "error",
+            {
+                "code": 150,
+                "ignoreStrings": true,
+                "ignoreTemplateLiterals": true,
+                "ignoreRegExpLiterals": true,
+                "ignoreTrailingComments": true,
+                "ignoreComments": true
+            }
+        ]
     },
     "parserOptions": {
         "ecmaVersion": 2017

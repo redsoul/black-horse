@@ -2,13 +2,13 @@ const EvaluationService = require('./evaluation-service.js');
 const configs = require('../configurations');
 
 class MvvLvaService {
-    constructor(){
-        //ordering moves scores
-        this.mvvLvaValue = [0, 100, 200, 300, 400, 500, 600, 100, 200, 300, 400, 500, 600];
-        this.mvvLvaScore = new Array(14 * 14);
-    }
+	constructor() {
+		//ordering moves scores
+		this.mvvLvaValue = [0, 100, 200, 300, 400, 500, 600, 100, 200, 300, 400, 500, 600];
+		this.mvvLvaScore = new Array(14 * 14);
+	}
 
-    /*
+	/*
      MVV - Most Value Victim
      LVA - Least Value Attacker
 
@@ -22,28 +22,30 @@ class MvvLvaService {
      K        x      R      --> 400+6-(400/100)=402
      ...
      */
-    init() {
-        let attacker;
-        let victim;
+	init() {
+		let attacker;
+		let victim;
 
-        for (attacker = configs.pieces.wP; attacker <= configs.pieces.bK; attacker += 1) {
-            for (victim = configs.pieces.wP; victim <= configs.pieces.bK; victim += 1) {
-                this.mvvLvaScore[victim * 14 + attacker] = this.mvvLvaValue[victim] + 6 - ( this.mvvLvaValue[attacker] / 100);
-            }
-        }
-    }
+		for (attacker = configs.pieces.wP; attacker <= configs.pieces.bK; attacker += 1) {
+			for (victim = configs.pieces.wP; victim <= configs.pieces.bK; victim += 1) {
+				this.mvvLvaScore[victim * 14 + attacker] = this.mvvLvaValue[victim] + 6 - this.mvvLvaValue[attacker] / 100;
+			}
+		}
+	}
 
-    getScore(boardModel, move) {
-        const pieceOrig = boardModel.getPieceByRowColumn(move.rowOrig, move.columnOrig);
-        const pieceDest = (move.flag === configs.flags.enPassant) ? 1 : boardModel.getPieceByRowColumn(move.rowDest, move.columnDest);
+	getScore(boardModel, move) {
+		const pieceOrig = boardModel.getPieceByRowColumn(move.rowOrig, move.columnOrig);
+		const pieceDest = move.flag === configs.flags.enPassant ? 1 : boardModel.getPieceByRowColumn(move.rowDest, move.columnDest);
 
-        if (pieceDest !== configs.pieces.empty) {
-            return this.mvvLvaScore[pieceDest * 14 + pieceOrig] + 1000000;
-        }
+		if (pieceDest !== configs.pieces.empty) {
+			return this.mvvLvaScore[pieceDest * 14 + pieceOrig] + 1000000;
+		}
 
-        return EvaluationService.evaluatePiece(boardModel, pieceOrig, move.rowDest, move.columnDest) -
-            EvaluationService.evaluatePiece(boardModel, pieceOrig, move.rowOrig, move.columnOrig);
-    }
+		return (
+			EvaluationService.evaluatePiece(boardModel, pieceOrig, move.rowDest, move.columnDest) -
+			EvaluationService.evaluatePiece(boardModel, pieceOrig, move.rowOrig, move.columnOrig)
+		);
+	}
 }
 
 module.exports = new MvvLvaService();

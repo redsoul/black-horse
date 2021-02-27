@@ -3,43 +3,42 @@ const each = require('lodash/each');
 const size = require('lodash/size');
 
 module.exports = class ListModel {
+	constructor(initObj) {
+		this.list = initObj || {};
+	}
 
-    constructor(initObj){
-        this.list = initObj || {};
-    }
+	remove(key) {
+		delete this.list[key];
+	}
 
-    remove(key) {
-        delete this.list[key];
-    }
+	insert(key, value) {
+		this.list[key] = value;
+	}
 
-    insert(key, value) {
-        this.list[key] = value;
-    }
+	search(key) {
+		return this.list[key];
+	}
 
-    search(key) {
-        return this.list[key];
-    }
+	clone() {
+		return new ListModel(cloneDeep(this.list));
+	}
 
-    clone() {
-        return new ListModel(cloneDeep(this.list));
-    }
+	count() {
+		return size(this.list);
+	}
 
-    count() {
-        return size(this.list);
-    }
+	traverse(callback) {
+		return each(this.list, (value, key) => {
+			callback(key, value);
+		});
+	}
 
-    traverse(callback) {
-        return each(this.list, (value, key) => {
-            callback(key, value);
-        });
-    }
+	keys() {
+		const listKeys = [];
+		each(this.list, (value, key) => {
+			listKeys.push(parseInt(key, 10));
+		});
 
-    keys() {
-        const listKeys = [];
-        each(this.list, (value, key) => {
-            listKeys.push(parseInt(key, 10));
-        });
-
-        return listKeys.sort();
-    }
+		return listKeys.sort();
+	}
 };

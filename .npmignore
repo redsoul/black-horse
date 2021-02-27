@@ -2,7 +2,6 @@ specs
 .idea
 node_modules
 .vscode
-gulpfile.js
 .eslintrc*
 .prettierrc
 test.js

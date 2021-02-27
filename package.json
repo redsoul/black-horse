@@ -5,7 +5,7 @@
   "description": "Chess engine built in NodeJS using the alpha-beta algorithm",
   "scripts": {
     "test": "jest",
-    "lint": "gulp lint",
+    "lint": "./node_modules/.bin/eslint src/*",
     "postinstall": "node checkVersion.js"
   },
   "repository": {
@@ -27,11 +27,8 @@
   ],
   "devDependencies": {
     "eslint": "^7.19.0",
-    "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-prettier": "^3.3.1",
-    "gulp": "^4.0.2",
-    "gulp-eslint": "^3.0.1",
     "jest": "^24.9.0",
     "prettier": "^2.2.1"
   },

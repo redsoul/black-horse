@@ -171,7 +171,19 @@ module.exports = class BoardModel extends BaseBoardModel {
 		}
 	}
 
-	setPieceByRowColumn(row, column, piece) {
+	traversePieces(callback) {
+		if (isUndefined(callback)) {
+			callback = (key, value) => {
+				const { row, column, piece } = value;
+				LoggerService.log('(' + row + ', ' + column + ') = ' + piece);
+			};
+		}
+
+		this.pieceList[configs.colors.black].traverse(callback);
+		this.pieceList[configs.colors.white].traverse(callback);
+	}
+
+	setPiece(row, column, piece) {
 		if (row > 8 || column > 8 || row < 1 || column < 1) {
 			return false;
 		}

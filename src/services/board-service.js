@@ -81,7 +81,7 @@ class BoardService {
 					this.boardModel.setKingPosition(configs.colors.black, [row, column]);
 				}
 
-				this.boardModel.setPieceByRowColumn(row, column, piece);
+				this.boardModel.setPiece(row, column, piece);
 				if (piece !== configs.pieces.empty) {
 					this.boardModel.incrementPieceCounter(piece);
 					this._updateMaterial(piece, true);
@@ -215,7 +215,7 @@ class BoardService {
 		if (piece === configs.pieces.wP || piece === configs.pieces.bP) {
 			index = pawnList.search(pos);
 			if (!remove && !index) {
-				pawnList.insert(pos, { row: row, column: column });
+				pawnList.insert(pos, { row, column, piece });
 			} else if (remove && index) {
 				pawnList.remove(pos);
 			}
@@ -223,7 +223,7 @@ class BoardService {
 	}
 
 	_addToPieceList(piece, row, column) {
-		const value = { row: row, column: column };
+		const value = { row, column, piece };
 		this.boardModel.getPieceList(this.boardModel.getPieceColour(piece)).insert(row + '' + column, value);
 	}
 
@@ -232,15 +232,14 @@ class BoardService {
 		const sideDest = this.boardModel.getPieceColour(pieceDest);
 		const posOrig = rowOrig + '' + columnOrig;
 		const posDest = rowDest + '' + columnDest;
-		let pieceList;
 
 		if (pieceDest !== configs.pieces.empty && sideDest !== -1 && sideOrig !== sideDest) {
 			this.boardModel.getPieceList(sideDest).remove(posDest);
 		}
 
-		pieceList = this.boardModel.getPieceList(sideOrig);
+		const pieceList = this.boardModel.getPieceList(sideOrig);
 		pieceList.remove(posOrig);
-		pieceList.insert(posDest, { row: rowDest, column: columnDest });
+		pieceList.insert(posDest, { row: rowDest, column: columnDest, piece: pieceOrig });
 	}
 
 	_removeFromPieceList(row, column) {
@@ -294,8 +293,8 @@ class BoardService {
 						this._hashPiece(rook, 1, 8);
 						this._hashPiece(rook, 1, 6);
 						this._updatePieceList(rook, this.boardModel.getPiece(1, 6), 1, 8, 1, 6);
-						this.boardModel.setPieceByRowColumn(1, 6, rook);
-						this.boardModel.setPieceByRowColumn(1, 8, configs.pieces.empty);
+						this.boardModel.setPiece(1, 6, rook);
+						this.boardModel.setPiece(1, 8, configs.pieces.empty);
 						flags[configs.colors.white].kingSide = true;
 					} else if (
 						castleFlags[configs.colors.white].queenSide &&
@@ -307,8 +306,8 @@ class BoardService {
 						this._hashPiece(rook, 1, 1);
 						this._hashPiece(rook, 1, 4);
 						this._updatePieceList(rook, this.boardModel.getPiece(1, 4), 1, 1, 1, 4);
-						this.boardModel.setPieceByRowColumn(1, 4, rook);
-						this.boardModel.setPieceByRowColumn(1, 1, configs.pieces.empty);
+						this.boardModel.setPiece(1, 4, rook);
+						this.boardModel.setPiece(1, 1, configs.pieces.empty);
 						flags[configs.colors.white].queenSide = true;
 					}
 
@@ -330,8 +329,8 @@ class BoardService {
 						this._hashPiece(rook, 8, 8);
 						this._hashPiece(rook, 8, 6);
 						this._updatePieceList(rook, this.boardModel.getPiece(8, 6), 8, 8, 8, 6);
-						this.boardModel.setPieceByRowColumn(8, 6, rook);
-						this.boardModel.setPieceByRowColumn(8, 8, configs.pieces.empty);
+						this.boardModel.setPiece(8, 6, rook);
+						this.boardModel.setPiece(8, 8, configs.pieces.empty);
 						flags[configs.colors.black].kingSide = true;
 					} else if (
 						castleFlags[configs.colors.black].queenSide &&
@@ -343,8 +342,8 @@ class BoardService {
 						this._hashPiece(rook, 8, 1);
 						this._hashPiece(rook, 8, 4);
 						this._updatePieceList(rook, this.boardModel.getPiece(8, 4), 8, 1, 8, 4);
-						this.boardModel.setPieceByRowColumn(8, 4, rook);
-						this.boardModel.setPieceByRowColumn(8, 1, configs.pieces.empty);
+						this.boardModel.setPiece(8, 4, rook);
+						this.boardModel.setPiece(8, 1, configs.pieces.empty);
 						flags[configs.colors.black].queenSide = true;
 					}
 
@@ -421,7 +420,7 @@ class BoardService {
 			this._hashPiece(enPassantPiece, enPassantPiecePos[0], enPassantPiecePos[1]);
 			this._removeFromPieceList(enPassantPiecePos[0], enPassantPiecePos[1]);
 
-			this.boardModel.setPieceByRowColumn(enPassantPiecePos[0], enPassantPiecePos[1], configs.pieces.empty);
+			this.boardModel.setPiece(enPassantPiecePos[0], enPassantPiecePos[1], configs.pieces.empty);
 
 			flagsObj.enPassant = true;
 		}
@@ -472,16 +471,16 @@ class BoardService {
 			this._updateMaterial(pieceOrig, false);
 			this._updateMaterial(move.promotedPiece, true);
 
-			this.boardModel.setPieceByRowColumn(move.rowOrig, move.columnOrig, configs.pieces.empty);
-			this.boardModel.setPieceByRowColumn(move.rowDest, move.columnDest, move.promotedPiece);
+			this.boardModel.setPiece(move.rowOrig, move.columnOrig, configs.pieces.empty);
+			this.boardModel.setPiece(move.rowDest, move.columnDest, move.promotedPiece);
 
 			//update the hash
 			this._hashPiece(move.promotedPiece, move.rowDest, move.columnDest);
 			flagsObj.promotion = true;
 		} else {
 			//move the piece on the board
-			this.boardModel.setPieceByRowColumn(move.rowDest, move.columnDest, pieceOrig);
-			this.boardModel.setPieceByRowColumn(move.rowOrig, move.columnOrig, configs.pieces.empty);
+			this.boardModel.setPiece(move.rowDest, move.columnDest, pieceOrig);
+			this.boardModel.setPiece(move.rowOrig, move.columnOrig, configs.pieces.empty);
 
 			//remove the piece at the destiny location from the hash
 			this._hashPiece(pieceOrig, move.rowDest, move.columnDest);

@@ -271,7 +271,6 @@ class SearchService {
 	searchNextMove(options = {}) {
 		let bestMove = null;
 		let board = this.BoardService.getBoard();
-		// this.BoardService.printBoard(board.get64Board());
 		let side = board.getSide();
 		let initHash = board.getHash();
 		let currentDepth;
@@ -295,7 +294,7 @@ class SearchService {
 		// iterative deepening
 		for (currentDepth = 1; currentDepth <= options.minDepth; currentDepth += 1) {
 			// console.log('------------------------');
-			// console.log('currentDepth: '+currentDepth);
+			// console.log('currentDepth: ' + currentDepth);
 			// console.log('------------------------');
 			this._alphaBeta(-Number.MAX_VALUE, Number.MAX_VALUE, currentDepth, 1);
 			this.BoardService.getBoard().setSide(side);

@@ -102,10 +102,9 @@ class HashService {
 	generateBoardHash(boardModel) {
 		let finalKey = 0;
 
-		boardModel.traverse((row, column, piece) => {
-			if (piece !== configs.pieces.empty) {
-				finalKey = this.hashPiece(finalKey, piece, row, column);
-			}
+		boardModel.traversePieces((key, value) => {
+			const { row, column, piece } = value;
+			finalKey = this.hashPiece(finalKey, piece, row, column);
 		});
 
 		finalKey = this.hashSide(finalKey, boardModel.getSide(), true);

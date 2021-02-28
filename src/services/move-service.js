@@ -482,7 +482,7 @@ class MoveService {
 			return false;
 		}
 
-		boardCopy.setPieceByRowColumn(row, column, this.getOppositePiece(piece));
+		boardCopy.setPiece(row, column, this.getOppositePiece(piece));
 
 		return this.isPieceAttacked(boardCopy, row, column);
 	}

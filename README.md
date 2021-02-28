@@ -1,7 +1,7 @@
 # Black Horse
 https://www.npmjs.com/package/black-horse
 
-NodeJS Chess Engine
+Javascript Chess Engine
 
 ## Installation
 
@@ -9,7 +9,7 @@ NodeJS Chess Engine
 
 ## Usage
 
-Just require the library and all of Black Horse namespace will be available to you:
+Just import the library and all of Black Horse namespace will be available to you:
 
 ```javascript
 const BlackHorseChessEngine = require('black-horse');

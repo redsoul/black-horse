@@ -2,7 +2,7 @@
   "main": "engine.js",
   "name": "black-horse",
   "version": "0.4.4",
-  "description": "Chess engine built in NodeJS using the alpha-beta algorithm",
+  "description": "Chess engine built in Javascript using the alpha-beta algorithm",
   "scripts": {
     "test": "jest",
     "lint": "./node_modules/.bin/eslint specs/* src/* engine.js",

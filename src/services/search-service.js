@@ -58,9 +58,9 @@ class SearchService {
 
 	_checkUp() {
 		if (this.alphaBetaEvaluations > 0 && this.alphaBetaEvaluations % 100 === 0) {
-			// if ((SearchService._now() - this.searchStart) > this.searchTime) {
-			//     this.searchStop = true;
-			// }
+			if (SearchService._now() - this.searchStart > this.searchTime) {
+				this.searchStop = true;
+			}
 
 			if (this.alphaBetaEvaluations % 2000 === 0) {
 				const timeSoFar = (SearchService._now() - this.searchStart) / 1000;

@@ -88,7 +88,7 @@ console.log(BlackHorseChessEngine.getBoard());
       kingPosition: [ [ 1, 5 ], [ 8, 5 ] ],
       piecesCounter: [ null, 8, 2, 2, 2, 1, 1, 8, 2, 2, 2, 1, 1 ],
       hash: 726761150,
-      side: 0,
+      color: 0,
       enPassant: false,
       fiftyMoveCounter: 0,
       fullmoveCounter: 0,
@@ -111,7 +111,7 @@ console.log(BlackHorseChessEngine.getPieceValidMoves('b2'));
     algebraicNotation: 'b3',
     piece: 1,
     pieceDest: 0,
-    side: 0,
+    color: 0,
     rowOrig: 2,
     columnOrig: 2,
     rowDest: 3,
@@ -125,7 +125,7 @@ console.log(BlackHorseChessEngine.getPieceValidMoves('b2'));
     algebraicNotation: 'b4',
     piece: 1,
     pieceDest: 0,
-    side: 0,
+    color: 0,
     rowOrig: 2,
     columnOrig: 2,
     rowDest: 4,
@@ -139,8 +139,8 @@ console.log(BlackHorseChessEngine.getPieceValidMoves('b2'));
 */
 ```
 
-### isCheckMate(side)
-Checks if for the given side, is it in check mate or not
+### isCheckMate(color)
+Checks if for the given color, is it in check mate or not
 ```Javascript
 BlackHorseChessEngine.parseFEN("2Q4k/1R6/8/8/8/8/8/7K w - - 0 2");
 //0 - white, 1 - black
@@ -156,7 +156,7 @@ BlackHorseChessEngine.isCheckMate(1); //true
     maxSearchTime: 3000 //max search time spended in seconds - default 3000
 }
 ```
-Search the next move for the current side
+Search the next move for the current color
 ```Javascript
 BlackHorseChessEngine.initBoard();
 const searchOptions = {
@@ -175,13 +175,13 @@ const nextMove = BlackHorseChessEngine.searchNextMove(searchOptions);
     "rowDest": 4,
     "rowOrig": 2,
     "score": 10,
-    "side": 0
+    "color": 0
 }
 */
 ```
 
 ### move(moveObject)
-Search the next move for the current side. 
+Search the next move for the current color. 
 Can accept an object with the coordinates and move flag or can accept a string with the Standart Algebraic Notation
 ```Javascript
 console.log(BlackHorseChessEngine.move({
@@ -219,7 +219,7 @@ Object containing all the configurations used in the chess engine.
  * 11 - Black Queen
  * 12 - Black King
 
-#### Side/color codes
+#### Color codes
  * 0 - White
  * 1 - Black
 

@@ -113,7 +113,7 @@ describe('Evaluation Service', function () {
 					{ kingSide: false, queenSide: false },
 				],
 			});
-			boardService.switchSide();
+			boardService.switchColor();
 			board = boardService.getBoard();
 			expect(boardService.convertToFEN()).toBe('rnb1k2r/pppp1ppp/3b4/1N2p1q1/4n3/3B1Q2/PPPP1PPP/R1B1K1NR w KQkq - 0 2');
 			expect(evaluationService.evaluateBoard(board)).toBe(-139);
@@ -129,7 +129,7 @@ describe('Evaluation Service', function () {
 					{ kingSide: true, queenSide: false },
 				],
 			});
-			boardService.switchSide();
+			boardService.switchColor();
 
 			board = boardService.getBoard();
 			expect(boardService.convertToFEN()).toBe('rnbq1rk1/p2p1ppp/2pb4/3Np3/2B1P3/5N2/PPPP1PPP/R1BQK2R w KQ - 0 2');
@@ -146,7 +146,7 @@ describe('Evaluation Service', function () {
 					{ kingSide: false, queenSide: false },
 				],
 			});
-			boardService.switchSide();
+			boardService.switchColor();
 
 			board = boardService.getBoard();
 			expect(boardService.convertToFEN()).toBe('2r3k1/1q1nbppp/r3p3/3pP3/2pP4/PpQ2N2/2RN1PPP/2R4K b - - 0 2');
@@ -245,13 +245,13 @@ describe('Evaluation Service', function () {
 			searchService.searchNextMove(searchTime, 1);
 			expect(evaluationService.getEvaluatedScoresCount()).toBe(20);
 			expect(evaluationService.getEvaluatedScoresUses()).toBe(0);
-			expect(boardService.getBoard().side).toBe(configs.colors.white);
+			expect(boardService.getBoard().color).toBe(configs.colors.white);
 
 			searchService.searchNextMove(searchTime, 1);
 			expect(evaluationService.getEvaluatedScoresCount()).toBe(20);
 			expect(evaluationService.getEvaluatedScoresUses()).toBe(20);
 
-			boardService.switchSide();
+			boardService.switchColor();
 			searchService.searchNextMove(searchTime, 1);
 			expect(evaluationService.getEvaluatedScoresCount()).toBe(40);
 			expect(evaluationService.getEvaluatedScoresUses()).toBe(20);
@@ -276,7 +276,7 @@ describe('Evaluation Service', function () {
 			expect(moveService.getGeneratedMovesUses()).toBe(55);
 			// expect(moveService.getGeneratedAttackMovesUses()).toBe(200);
 
-			boardService.switchSide();
+			boardService.switchColor();
 			searchService.searchNextMove(searchTime, 2);
 			expect(evaluationService.getEvaluatedScoresCount()).toBe(83);
 			expect(evaluationService.getEvaluatedScoresUses()).toBe(41);
@@ -306,7 +306,7 @@ describe('Evaluation Service', function () {
 			expect(moveService.getGeneratedMovesUses()).toBe(17);
 			// expect(moveService.getGeneratedAttackMovesUses()).toBe(40);
 
-			boardService.switchSide();
+			boardService.switchColor();
 			searchService.searchNextMove(searchTime, 1);
 			expect(evaluationService.getEvaluatedScoresCount()).toBe(15);
 			expect(evaluationService.getEvaluatedScoresUses()).toBe(9);
@@ -336,7 +336,7 @@ describe('Evaluation Service', function () {
 			expect(moveService.getGeneratedMovesUses()).toBe(33);
 			// expect(moveService.getGeneratedAttackMovesUses()).toBe(146);
 
-			boardService.switchSide();
+			boardService.switchColor();
 			searchService.searchNextMove(searchTime, 2);
 			expect(evaluationService.getEvaluatedScoresCount()).toBe(56);
 			expect(evaluationService.getEvaluatedScoresUses()).toBe(67);

@@ -8,8 +8,8 @@ class HashService {
 		this.pieceKeys = new Array(12 * this.squareNumber * this.squareNumber);
 		this.castleKeys = new Array(16);
 		this.enPassantKeys = new Array(this.squareNumber * this.squareNumber);
-		this.sideKeys = new Array(2);
-		this.movementSideKeys = new Array(2);
+		this.colorKeys = new Array(2);
+		this.movementColorKeys = new Array(2);
 	}
 
 	static _rand32() {
@@ -32,11 +32,11 @@ class HashService {
 			this.enPassantKeys[index] = HashService._rand32();
 		}
 
-		this.sideKeys[configs.colors.white] = HashService._rand32();
-		this.sideKeys[configs.colors.black] = HashService._rand32();
+		this.colorKeys[configs.colors.white] = HashService._rand32();
+		this.colorKeys[configs.colors.black] = HashService._rand32();
 
-		this.movementSideKeys[configs.colors.white] = HashService._rand32();
-		this.movementSideKeys[configs.colors.black] = HashService._rand32();
+		this.movementColorKeys[configs.colors.white] = HashService._rand32();
+		this.movementColorKeys[configs.colors.black] = HashService._rand32();
 
 		for (index = 0; index < 16; index += 1) {
 			this.castleKeys[index] = HashService._rand32();
@@ -69,13 +69,13 @@ class HashService {
 		return origHash;
 	}
 
-	hashSide(origHash, side, firstHash) {
+	hashColor(origHash, color, firstHash) {
 		firstHash = !isUndefined(firstHash);
 
 		if (!firstHash) {
-			origHash ^= this.sideKeys[side ^ 1];
+			origHash ^= this.colorKeys[color ^ 1];
 		}
-		origHash ^= this.sideKeys[side];
+		origHash ^= this.colorKeys[color];
 
 		return origHash;
 	}
@@ -93,8 +93,8 @@ class HashService {
 		return origHash;
 	}
 
-	hashMovementSide(origHash, side) {
-		origHash ^= this.movementSideKeys[side];
+	hashMovementColor(origHash, color) {
+		origHash ^= this.movementColorKeys[color];
 
 		return origHash;
 	}
@@ -107,7 +107,7 @@ class HashService {
 			finalKey = this.hashPiece(finalKey, piece, row, column);
 		});
 
-		finalKey = this.hashSide(finalKey, boardModel.getSide(), true);
+		finalKey = this.hashColor(finalKey, boardModel.getColor(), true);
 		finalKey = this.hashEnPassant(finalKey, boardModel.getEnPassantPosition());
 		finalKey = this.hashCastle(finalKey, boardModel.getCastleFlags());
 

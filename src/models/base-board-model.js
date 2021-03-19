@@ -17,7 +17,7 @@ module.exports = class BaseBoardModel {
 			kingPosition: cloneDeep(this.kingPosition),
 			piecesCounter: cloneDeep(this.piecesCounter),
 			hash: this.hash,
-			side: this.side,
+			color: this.color,
 			enPassant: this.enPassant,
 			fiftyMoveCounter: this.fiftyMoveCounter,
 			fullmoveCounter: this.fullmoveCounter,
@@ -35,7 +35,7 @@ module.exports = class BaseBoardModel {
 		this.kingPosition = obj.kingPosition;
 		this.piecesCounter = obj.piecesCounter;
 		this.hash = obj.hash;
-		this.side = obj.side;
+		this.color = obj.color;
 		this.enPassant = obj.enPassant;
 		this.fiftyMoveCounter = obj.fiftyMoveCounter;
 		this.fullmoveCounter = obj.fullmoveCounter;
@@ -44,25 +44,25 @@ module.exports = class BaseBoardModel {
 		this.pieceList = [];
 
 		if (
-			typeof obj.pawnList[0] === 'object' &&
-			typeof obj.pawnList[1] === 'object' &&
-			typeof obj.pieceList[0] === 'object' &&
-			typeof obj.pieceList[1] === 'object'
+			typeof obj.pawnList[configs.colors.black] === 'object' &&
+			typeof obj.pawnList[configs.colors.white] === 'object' &&
+			typeof obj.pieceList[configs.colors.black] === 'object' &&
+			typeof obj.pieceList[configs.colors.white] === 'object'
 		) {
-			this.pawnList[0] = obj.pawnList[0].clone();
-			this.pawnList[1] = obj.pawnList[1].clone();
-			this.pieceList[0] = obj.pieceList[0].clone();
-			this.pieceList[1] = obj.pieceList[1].clone();
+			this.pawnList[configs.colors.black] = obj.pawnList[configs.colors.black].clone();
+			this.pawnList[configs.colors.white] = obj.pawnList[configs.colors.white].clone();
+			this.pieceList[configs.colors.black] = obj.pieceList[configs.colors.black].clone();
+			this.pieceList[configs.colors.white] = obj.pieceList[configs.colors.white].clone();
 		} else {
 			this.pawnList[configs.colors.black] = new ListModel();
 			this.pawnList[configs.colors.white] = new ListModel();
 			this.pieceList[configs.colors.black] = new ListModel();
 			this.pieceList[configs.colors.white] = new ListModel();
 
-			this.pawnList[configs.colors.black].rebuild(obj.pawnList[0]);
-			this.pawnList[configs.colors.white].rebuild(obj.pawnList[1]);
-			this.pieceList[configs.colors.black].rebuild(obj.pieceList[0]);
-			this.pieceList[configs.colors.white].rebuild(obj.pieceList[1]);
+			this.pawnList[configs.colors.black].rebuild(obj.pawnList[configs.colors.black]);
+			this.pawnList[configs.colors.white].rebuild(obj.pawnList[configs.colors.white]);
+			this.pieceList[configs.colors.black].rebuild(obj.pieceList[configs.colors.black]);
+			this.pieceList[configs.colors.white].rebuild(obj.pieceList[configs.colors.white]);
 		}
 	}
 
@@ -89,52 +89,56 @@ module.exports = class BaseBoardModel {
 		}
 	}
 
-	getPieceMaterial(side) {
-		return this.pieceMaterial[side];
+	getPieceMaterial(color) {
+		return this.pieceMaterial[color];
 	}
 
-	setPieceMaterial(side, value) {
-		this.pieceMaterial[side] = value;
+	setPieceMaterial(color, value) {
+		this.pieceMaterial[color] = value;
 	}
 
-	getPawnMaterial(side) {
-		return this.pawnMaterial[side];
+	getPawnMaterial(color) {
+		return this.pawnMaterial[color];
 	}
 
-	setPawnMaterial(side, value) {
-		this.pawnMaterial[side] = value;
+	setPawnMaterial(color, value) {
+		this.pawnMaterial[color] = value;
 	}
 
-	getPawnList(side) {
-		return this.pawnList[side];
+	getPawnList(color) {
+		return this.pawnList[color];
 	}
 
-	getPieceList(side) {
-		return this.pieceList[side];
+	getPieceList(color) {
+		return this.pieceList[color];
 	}
 
 	isEmpty(row, column) {
 		return this.getPiece(row, column) === configs.pieces.empty;
 	}
 
-	getKingPosition(side) {
-		return this.kingPosition[side];
+	isPawn(piece) {
+		return piece === configs.pieces.wP || piece === configs.pieces.bP;
 	}
 
-	setKingPosition(side, pos) {
-		this.kingPosition[side] = pos;
+	getKingPosition(color) {
+		return this.kingPosition[color];
 	}
 
-	getSide() {
-		return this.side;
+	setKingPosition(color, pos) {
+		this.kingPosition[color] = pos;
 	}
 
-	setSide(_side) {
-		this.side = _side;
+	getColor() {
+		return this.color;
 	}
 
-	switchSide() {
-		this.side ^= 1;
+	setColor(_color) {
+		this.color = _color;
+	}
+
+	switchColor() {
+		this.color ^= 1;
 	}
 
 	getEnPassantPosition() {
@@ -177,7 +181,7 @@ module.exports = class BaseBoardModel {
 		return board;
 	}
 
-	getPieceColour() {
+	getPieceColor() {
 		if (arguments.length === 1) {
 			let piece = arguments[0];
 			if (piece === configs.pieces.empty || piece === configs.pieces.offBoard) {
@@ -185,12 +189,12 @@ module.exports = class BaseBoardModel {
 			}
 			return indexOf(configs.whitePieces, piece) >= 0 ? configs.colors.white : configs.colors.black;
 		}
-		return this.getPieceColour(this.getPiece(arguments[0], arguments[1]));
+		return this.getPieceColor(this.getPiece(arguments[0], arguments[1]));
 	}
 
 	addLostPiece() {
 		const piece = arguments.length === 1 ? arguments[0] : this.getPiece(arguments[0], arguments[1]);
-		this.capturedPieces[this.getPieceColour(piece)].push(piece);
+		this.capturedPieces[this.getPieceColor(piece)].push(piece);
 	}
 
 	getCapturedPieces() {

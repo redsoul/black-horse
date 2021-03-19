@@ -87,7 +87,7 @@ class BoardService {
 					this._updateMaterial(piece, true);
 					this._addToPieceList(piece, row, column);
 
-					if (piece === configs.pieces.wP || piece === configs.pieces.bP) {
+					if (this.boardModel.isPawn(piece)) {
 						this._updatePawnList(piece, row, column);
 					}
 				}
@@ -98,8 +98,8 @@ class BoardService {
 
 		//rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 
-		//set the play side (black or white)
-		this.boardModel.setSide(fen[fenCnt] === 'w' ? configs.colors.white : configs.colors.black);
+		//set the play color (black or white)
+		this.boardModel.setColor(fen[fenCnt] === 'w' ? configs.colors.white : configs.colors.black);
 		fenCnt += 2;
 
 		//set the castling configuration
@@ -159,9 +159,6 @@ class BoardService {
 	}
 
 	getPieceMoves(row, column) {
-		if (Array.isArray(row)) {
-			return this.MoveService.getPieceMoves(this.boardModel, row[0], row[1]);
-		}
 		return this.MoveService.getPieceMoves(this.boardModel, row, column);
 	}
 
@@ -180,73 +177,67 @@ class BoardService {
 	}
 
 	isPieceAttacked(row, column) {
-		if (Array.isArray(row)) {
-			return this.MoveService.isPieceAttacked(this.boardModel, row[0], row[1]);
-		}
 		return this.MoveService.isPieceAttacked(this.boardModel, row, column);
 	}
 
-	_updateMaterial(piece, up) {
-		const side = this.boardModel.getPieceColour(piece);
+	_updateMaterial(piece, up = true) {
+		const color = this.boardModel.getPieceColor(piece);
 		let value;
-		let sign;
-
-		up = typeof up === 'undefined' ? true : up;
-		sign = up ? 1 : -1;
+		const sign = up ? 1 : -1;
 
 		if (piece !== configs.pieces.empty) {
 			value = this.PieceService.getStartingPieceValue(piece);
-			this.boardModel.setPieceMaterial(side, this.boardModel.getPieceMaterial(side) + value * sign);
+			this.boardModel.setPieceMaterial(color, this.boardModel.getPieceMaterial(color) + value * sign);
 
-			if (piece === configs.pieces.wP || piece === configs.pieces.bP) {
-				this.boardModel.setPawnMaterial(side, this.boardModel.getPawnMaterial(side) + value * sign);
+			if (this.boardModel.isPawn(piece)) {
+				this.boardModel.setPawnMaterial(color, this.boardModel.getPawnMaterial(color) + value * sign);
 			}
 		}
 	}
 
-	_updatePawnList(piece, row, column, remove) {
-		const side = this.boardModel.getPieceColour(piece);
+	_updatePawnList(piece, row, column, remove = false) {
+		if (!this.boardModel.isPawn(piece)) {
+			return;
+		}
+
+		const color = this.boardModel.getPieceColor(piece);
 		const pos = row + '' + column;
 		let index;
-		const pawnList = this.boardModel.getPawnList(side);
+		const pawnList = this.boardModel.getPawnList(color);
 
-		remove = typeof remove === 'undefined' ? false : remove;
-
-		if (piece === configs.pieces.wP || piece === configs.pieces.bP) {
-			index = pawnList.search(pos);
-			if (!remove && !index) {
-				pawnList.insert(pos, { row, column, piece });
-			} else if (remove && index) {
-				pawnList.remove(pos);
-			}
+		index = pawnList.search(pos);
+		if (!remove && !index) {
+			pawnList.insert(pos, { row, column, piece });
+		} else if (remove && index) {
+			pawnList.remove(pos);
 		}
 	}
 
 	_addToPieceList(piece, row, column) {
 		const value = { row, column, piece };
-		this.boardModel.getPieceList(this.boardModel.getPieceColour(piece)).insert(row + '' + column, value);
+		this.boardModel.getPieceList(this.boardModel.getPieceColor(piece)).insert(row + '' + column, value);
 	}
 
 	_updatePieceList(pieceOrig, pieceDest, rowOrig, columnOrig, rowDest, columnDest) {
-		const sideOrig = this.boardModel.getPieceColour(pieceOrig);
-		const sideDest = this.boardModel.getPieceColour(pieceDest);
+		const colorOrig = this.boardModel.getPieceColor(pieceOrig);
+		const colorDest = this.boardModel.getPieceColor(pieceDest);
 		const posOrig = rowOrig + '' + columnOrig;
 		const posDest = rowDest + '' + columnDest;
 
-		if (pieceDest !== configs.pieces.empty && sideDest !== -1 && sideOrig !== sideDest) {
-			this.boardModel.getPieceList(sideDest).remove(posDest);
+		if (pieceDest !== configs.pieces.empty && colorDest !== -1 && colorOrig !== colorDest) {
+			this.boardModel.getPieceList(colorDest).remove(posDest);
 		}
 
-		const pieceList = this.boardModel.getPieceList(sideOrig);
+		const pieceList = this.boardModel.getPieceList(colorOrig);
 		pieceList.remove(posOrig);
 		pieceList.insert(posDest, { row: rowDest, column: columnDest, piece: pieceOrig });
 	}
 
 	_removeFromPieceList(row, column) {
 		const piece = this.boardModel.getPiece(row, column);
-		const side = this.boardModel.getPieceColour(row, column);
+		const color = this.boardModel.getPieceColor(row, column);
 		if (piece !== configs.pieces.empty) {
-			this.boardModel.getPieceList(side).remove(row + '' + column);
+			this.boardModel.getPieceList(color).remove(row + '' + column);
 		}
 	}
 
@@ -368,18 +359,18 @@ class BoardService {
 		this.boardModel.setHash(HashService.hashPiece(this.boardModel.getHash(), piece, row, column));
 	}
 
-	_hashSide() {
-		this.boardModel.setHash(HashService.hashSide(this.boardModel.getHash(), this.boardModel.getSide()));
+	_hashColor() {
+		this.boardModel.setHash(HashService.hashColor(this.boardModel.getHash(), this.boardModel.getColor()));
 	}
 
 	makeMove(move) {
 		let pieceOrig;
 		let pieceDest;
-		let pieceSide;
+		let pieceColor;
 		let kingPosition;
 		let enPassantPiece;
 		let enPassantPosition;
-		let side;
+		let dir;
 		const flagsObj = {
 			enPassant: false,
 			castle: false,
@@ -391,13 +382,13 @@ class BoardService {
 
 		pieceOrig = move.piece;
 		pieceDest = move.pieceDest;
-		pieceSide = move.side;
-		side = pieceSide === configs.colors.white ? 1 : -1;
+		pieceColor = move.color;
+		dir = pieceColor === configs.colors.white ? 1 : -1;
 
 		if (
 			pieceOrig === configs.pieces.empty ||
 			pieceOrig === configs.pieces.offBoard ||
-			this.boardModel.getPieceColour(move.rowDest, move.columnDest) === pieceSide
+			this.boardModel.getPieceColor(move.rowDest, move.columnDest) === pieceColor
 		) {
 			return false;
 		}
@@ -410,7 +401,7 @@ class BoardService {
 		//add en passant pawn to capture list
 		enPassantPosition = this.boardModel.getEnPassantPosition();
 		if (move.flag === configs.flags.enPassant && enPassantPosition) {
-			const enPassantPiecePos = [enPassantPosition[0] - side, enPassantPosition[1]];
+			const enPassantPiecePos = [enPassantPosition[0] - dir, enPassantPosition[1]];
 			enPassantPiece = this.boardModel.getPiece(enPassantPiecePos[0], enPassantPiecePos[1]);
 			this.boardModel.decrementPieceCounter(enPassantPiece);
 			this.boardModel.addLostPiece(enPassantPiecePos[0], enPassantPiecePos[1]);
@@ -445,7 +436,7 @@ class BoardService {
 			(pieceOrig === configs.pieces.bP && move.rowDest === 5 && move.rowOrig === 7) ||
 			(pieceOrig === configs.pieces.wP && move.rowDest === 4 && move.rowOrig === 2)
 		) {
-			this.boardModel.setEnPassantPosition(move.rowDest - side, move.columnDest);
+			this.boardModel.setEnPassantPosition(move.rowDest - dir, move.columnDest);
 		} else {
 			this.boardModel.setEnPassantPosition();
 		}
@@ -487,10 +478,10 @@ class BoardService {
 		}
 
 		//update the king position
-		kingPosition = this.boardModel.getKingPosition(pieceSide);
+		kingPosition = this.boardModel.getKingPosition(pieceColor);
 		if (kingPosition[0] === move.rowOrig && kingPosition[1] === move.columnOrig) {
 			kingPosition = [move.rowDest, move.columnDest];
-			this.boardModel.setKingPosition(pieceSide, kingPosition);
+			this.boardModel.setKingPosition(pieceColor, kingPosition);
 		}
 
 		this.boardModel.incrementFullMoveCounter();
@@ -520,7 +511,7 @@ class BoardService {
 
 	moveAndSwitch(rowOrig, columnOrig, rowDest, columnDest) {
 		const flags = this.makeMoveXY(rowOrig, columnOrig, rowDest, columnDest);
-		this.switchSide();
+		this.switchColor();
 		return flags;
 	}
 
@@ -539,16 +530,16 @@ class BoardService {
 		return this.MoveService.getLastMove();
 	}
 
-	isCheckMate(side) {
+	isCheckMate(color) {
 		const board = this.getBoard();
-		const kingPosition = board.getKingPosition(side);
+		const kingPosition = board.getKingPosition(color);
 		let isKingInCheck = this.isPieceAttacked(kingPosition[0], kingPosition[1]);
 
 		if (isKingInCheck === false) {
 			return false;
 		}
 
-		const moves = this.generateAllMoves(side);
+		const moves = this.generateAllMoves(color);
 		let legalMoves = 0;
 		for (let move of moves) {
 			if (!this.makeMove(move)) {
@@ -567,21 +558,21 @@ class BoardService {
 		return legalMoves === 0;
 	}
 
-	switchSide() {
-		this.boardModel.switchSide();
-		this._hashSide();
+	switchColor() {
+		this.boardModel.switchColor();
+		this._hashColor();
 	}
 
-	generateAllMoves(side) {
-		return this.MoveService.generateAllMoves(this.boardModel, side);
+	generateAllMoves(color) {
+		return this.MoveService.generateAllMoves(this.boardModel, color);
 	}
 
-	generateAllCaptureMoves(side) {
-		return this.MoveService.generateAllCaptureMoves(this.boardModel, side);
+	generateAllCaptureMoves(color) {
+		return this.MoveService.generateAllCaptureMoves(this.boardModel, color);
 	}
 
-	generateAllValidMoves(side) {
-		const moves = this.generateAllMoves(side);
+	generateAllValidMoves(color) {
+		const moves = this.generateAllMoves(color);
 		const validMoves = [];
 
 		for (let move of moves) {

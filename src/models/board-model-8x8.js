@@ -33,9 +33,7 @@ module.exports = class BoardModel extends BaseBoardModel {
          ...└────────────────────────┘
          .....a  b  c  d  e  f  g  h
          */
-		this.board = times(8, function () {
-			return new Array(8);
-		});
+		this.board = times(8, () => new Array(8));
 
 		//put all board squares as empty
 		for (indexW = 0; indexW < 8; indexW++) {
@@ -60,7 +58,7 @@ module.exports = class BoardModel extends BaseBoardModel {
 			queenSide: false,
 		};
 
-		this.side = configs.colors.white;
+		this.color = configs.colors.white;
 
 		this.kingPosition = [];
 
@@ -105,7 +103,7 @@ module.exports = class BoardModel extends BaseBoardModel {
 			kingPosition: cloneDeep(this.kingPosition),
 			piecesCounter: cloneDeep(this.piecesCounter),
 			hash: this.hash,
-			side: this.side,
+			color: this.color,
 			enPassant: this.enPassant,
 			fiftyMoveCounter: this.fiftyMoveCounter,
 			fullmoveCounter: this.fullmoveCounter,
@@ -123,7 +121,7 @@ module.exports = class BoardModel extends BaseBoardModel {
 		this.kingPosition = obj.kingPosition;
 		this.piecesCounter = obj.piecesCounter;
 		this.hash = obj.hash;
-		this.side = obj.side;
+		this.color = obj.color;
 		this.enPassant = obj.enPassant;
 		this.fiftyMoveCounter = obj.fiftyMoveCounter;
 		this.fullmoveCounter = obj.fullmoveCounter;
@@ -132,25 +130,25 @@ module.exports = class BoardModel extends BaseBoardModel {
 		this.pieceList = [];
 
 		if (
-			typeof obj.pawnList[0] === 'object' &&
-			typeof obj.pawnList[1] === 'object' &&
-			typeof obj.pieceList[0] === 'object' &&
-			typeof obj.pieceList[1] === 'object'
+			typeof obj.pawnList[configs.colors.black] === 'object' &&
+			typeof obj.pawnList[configs.colors.white] === 'object' &&
+			typeof obj.pieceList[configs.colors.black] === 'object' &&
+			typeof obj.pieceList[configs.colors.white] === 'object'
 		) {
-			this.pawnList[0] = obj.pawnList[0].clone();
-			this.pawnList[1] = obj.pawnList[1].clone();
-			this.pieceList[0] = obj.pieceList[0].clone();
-			this.pieceList[1] = obj.pieceList[1].clone();
+			this.pawnList[configs.colors.black] = obj.pawnList[configs.colors.black].clone();
+			this.pawnList[configs.colors.white] = obj.pawnList[configs.colors.white].clone();
+			this.pieceList[configs.colors.black] = obj.pieceList[configs.colors.black].clone();
+			this.pieceList[configs.colors.white] = obj.pieceList[configs.colors.white].clone();
 		} else {
 			this.pawnList[configs.colors.black] = new ListModel();
 			this.pawnList[configs.colors.white] = new ListModel();
 			this.pieceList[configs.colors.black] = new ListModel();
 			this.pieceList[configs.colors.white] = new ListModel();
 
-			this.pawnList[configs.colors.black].rebuild(obj.pawnList[0]);
-			this.pawnList[configs.colors.white].rebuild(obj.pawnList[1]);
-			this.pieceList[configs.colors.black].rebuild(obj.pieceList[0]);
-			this.pieceList[configs.colors.white].rebuild(obj.pieceList[1]);
+			this.pawnList[configs.colors.black].rebuild(obj.pawnList[configs.colors.black]);
+			this.pawnList[configs.colors.white].rebuild(obj.pawnList[configs.colors.white]);
+			this.pieceList[configs.colors.black].rebuild(obj.pieceList[configs.colors.black]);
+			this.pieceList[configs.colors.white].rebuild(obj.pieceList[configs.colors.white]);
 		}
 	}
 

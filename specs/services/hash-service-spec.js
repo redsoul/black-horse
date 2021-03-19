@@ -84,20 +84,20 @@ describe('Hash Service', function () {
 			expect(hashKey).toBe(hashKey2);
 		});
 
-		test('hashSide', function () {
+		test('hashColor', function () {
 			hashKey = boardModel.getHash();
 
-			hashKey2 = HashService.hashSide(hashKey, !boardModel.getSide());
-			hashKey2 = HashService.hashSide(hashKey2, !boardModel.getSide());
+			hashKey2 = HashService.hashColor(hashKey, !boardModel.getColor());
+			hashKey2 = HashService.hashColor(hashKey2, !boardModel.getColor());
 
 			expect(hashKey).toBe(hashKey2);
 		});
 
-		test('hashMovementSide', function () {
+		test('hashMovementColor', function () {
 			hashKey = boardModel.getHash();
 
-			hashKey2 = HashService.hashMovementSide(hashKey, !boardModel.getSide());
-			hashKey2 = HashService.hashMovementSide(hashKey2, !boardModel.getSide());
+			hashKey2 = HashService.hashMovementColor(hashKey, !boardModel.getColor());
+			hashKey2 = HashService.hashMovementColor(hashKey2, !boardModel.getColor());
 
 			expect(hashKey).toBe(hashKey2);
 		});
@@ -119,7 +119,7 @@ describe('Hash Service', function () {
 
 		test('FEN 3 - move a piece', function () {
 			boardService.makeMoveXY(2, 4, 3, 4);
-			boardService.switchSide();
+			boardService.switchColor();
 
 			hashKey = boardService.getBoard().getHash();
 
@@ -130,7 +130,7 @@ describe('Hash Service', function () {
 		test('FEN 4 - capture a piece', function () {
 			boardService.parseFEN('2qk4/1p3n2/2p5/3p4/5P2/2N1P3/3P4/4QK2 w KQkq - 0 1');
 			boardService.makeMoveXY(3, 3, 5, 4);
-			boardService.switchSide();
+			boardService.switchColor();
 
 			hashKey = boardService.getBoard().getHash();
 
@@ -141,7 +141,7 @@ describe('Hash Service', function () {
 		test('FEN 5 - pawn promotion', function () {
 			boardService.parseFEN('8/P7/8/k7/8/8/8/K7 w - - 0 1');
 			boardService.makeMoveXY(7, 1, 8, 1);
-			boardService.switchSide();
+			boardService.switchColor();
 			expect(boardService.convertToFEN()).toBe('Q7/8/8/k7/8/8/8/K7 b - - 0 2');
 
 			hashKey = boardService.getBoard().getHash();
@@ -153,7 +153,7 @@ describe('Hash Service', function () {
 		test('FEN 6 - capturing and promote', function () {
 			boardService.parseFEN('8/k7/8/7K/8/8/p7/1N6 b - - 0 1');
 			boardService.makeMoveXY(2, 1, 1, 2);
-			boardService.switchSide();
+			boardService.switchColor();
 
 			hashKey = boardService.getBoard().getHash();
 
@@ -164,7 +164,7 @@ describe('Hash Service', function () {
 		test('FEN 7 - castling move king side', function () {
 			boardService.parseFEN('r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1');
 			boardService.makeMoveXY(1, 5, 1, 7);
-			boardService.switchSide();
+			boardService.switchColor();
 
 			hashKey = boardService.getBoard().getHash();
 
@@ -175,7 +175,7 @@ describe('Hash Service', function () {
 		test('FEN 8 - castling move queen side', function () {
 			boardService.parseFEN('r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1');
 			boardService.makeMoveXY(1, 5, 1, 3);
-			boardService.switchSide();
+			boardService.switchColor();
 
 			hashKey = boardService.getBoard().getHash();
 
@@ -186,13 +186,13 @@ describe('Hash Service', function () {
 		test('FEN 9 - en passant move', function () {
 			boardService.parseFEN('8/7b/8/8/R1p5/4P1k1/P2P4/K7 w - - 0 1');
 			expect(boardService.makeMoveXY(2, 4, 4, 4)).toBeTruthy();
-			boardService.switchSide();
+			boardService.switchColor();
 			hashKey = boardService.getBoard().getHash();
 
 			boardService.parseFEN('8/7b/8/8/R1pP4/4P1k1/P7/K7 b - d3 0 1');
 			expect(hashKey).toBe(boardService.getBoard().getHash());
 			expect(boardService.makeMoveXY(4, 3, 3, 4, configs.flags.enPassant)).toBeTruthy();
-			boardService.switchSide();
+			boardService.switchColor();
 
 			hashKey2 = boardService.getBoard().getHash();
 			boardService.parseFEN('8/7b/8/8/R7/3pP1k1/P7/K7 w - - 0 1');
@@ -204,10 +204,10 @@ describe('Hash Service', function () {
 			boardService.parseFEN('r1bqk1nr/pppp1ppp/2nb4/4p3/4P3/P1NP4/1PP2PPP/R1BQKBNR w KQkq - 0 1');
 
 			expect(boardService.makeMoveXY(8, 7, 6, 6)).toBeTruthy();
-			boardService.switchSide();
+			boardService.switchColor();
 
 			expect(boardService.makeMoveXY(1, 3, 5, 7)).toBeTruthy();
-			boardService.switchSide();
+			boardService.switchColor();
 
 			hashKey = boardService.getBoard().getHash();
 			boardService.parseFEN('r1bqk2r/pppp1ppp/2nb1n2/4p1B1/4P3/P1NP4/1PP2PPP/R2QKBNR w KQkq - 0 1');

@@ -85,7 +85,7 @@ class SearchService {
 		let move;
 		let legalMoves = 0;
 		let bestMove;
-		let side;
+		let color;
 		let oldAlpha;
 		let movesLength;
 
@@ -109,7 +109,7 @@ class SearchService {
 
 		oldAlpha = alpha;
 
-		captureMoves = this.BoardService.generateAllCaptureMoves(board.getSide());
+		captureMoves = this.BoardService.generateAllCaptureMoves(board.getColor());
 		if (captureMoves.length === 0) {
 			return alpha;
 		}
@@ -117,11 +117,11 @@ class SearchService {
 		//put the best move from the last iteration on top
 		this.PvTableService.promoteLastBestMove(captureMoves, board.getHash());
 
-		this.BoardService.switchSide();
-		side = board.getSide();
+		this.BoardService.switchColor();
+		color = board.getColor();
 
 		for (index = 0, movesLength = captureMoves.length; index < movesLength; index += 1) {
-			this.BoardService.getBoard().setSide(side);
+			this.BoardService.getBoard().setColor(color);
 			board = this.BoardService.getBoard();
 			move = this.MoveService.pickNextMove(captureMoves, index);
 
@@ -171,7 +171,7 @@ class SearchService {
 		let index;
 		let move;
 		let legalMoves = 0;
-		let side;
+		let color;
 		let oldAlpha = alpha;
 		let bestMove = false;
 		let inCheck;
@@ -182,12 +182,13 @@ class SearchService {
 
 		this._checkUp();
 
-		inCheck = this.BoardService.isPieceAttacked(board.getKingPosition(board.getSide()));
+		const kingPosition = board.getKingPosition(board.getColor());
+		inCheck = this.BoardService.isPieceAttacked(kingPosition[0], kingPosition[1]);
 		if (inCheck) {
 			depthLeft += 1;
 		}
 		this.searchNodes += 1;
-		moves = this.BoardService.generateAllMoves(board.getSide());
+		moves = this.BoardService.generateAllMoves(board.getColor());
 		// NotationService.printMoveArray(moves);
 		//put the best move from the last iteration on top
 		this.PvTableService.promoteLastBestMove(moves, board.getHash());
@@ -197,11 +198,11 @@ class SearchService {
 		this.CutoffService.promoteAlphaMoves(moves, currentDepth);
 		// NotationService.printMoveArray(moves);
 
-		this.BoardService.switchSide();
+		this.BoardService.switchColor();
 
-		side = board.getSide();
+		color = board.getColor();
 		for (index = 0, movesLength = moves.length; index < movesLength; index += 1) {
-			this.BoardService.getBoard().setSide(side);
+			this.BoardService.getBoard().setColor(color);
 			board = this.BoardService.getBoard();
 			move = this.MoveService.pickNextMove(moves, index);
 			// NotationService.printMove(move);
@@ -271,7 +272,7 @@ class SearchService {
 	searchNextMove(options = {}) {
 		let bestMove = null;
 		let board = this.BoardService.getBoard();
-		let side = board.getSide();
+		let color = board.getColor();
 		let initHash = board.getHash();
 		let currentDepth;
 		let timeSoFar;
@@ -297,7 +298,7 @@ class SearchService {
 			// console.log('currentDepth: ' + currentDepth);
 			// console.log('------------------------');
 			this._alphaBeta(-Number.MAX_VALUE, Number.MAX_VALUE, currentDepth, 1);
-			this.BoardService.getBoard().setSide(side);
+			this.BoardService.getBoard().setColor(color);
 			this.BoardService.updateBoardHash(initHash); //to ensure that the hash is the same in each iteration
 
 			if (this.searchStop && bestMove !== false) {

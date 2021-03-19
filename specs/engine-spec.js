@@ -14,7 +14,7 @@ describe('Engine', function () {
 			'isCheckMate',
 			'searchNextMove',
 			'move',
-			'getPieceSide',
+			'getPieceColor',
 			'configs',
 		]);
 	});
@@ -63,7 +63,7 @@ describe('Engine', function () {
 			rowDest: 4,
 			rowOrig: 2,
 			score: 5,
-			side: 0,
+			color: 0,
 		});
 		expect(engine.isCheckMate(0)).toBeFalsy();
 	});

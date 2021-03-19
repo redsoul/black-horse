@@ -59,7 +59,7 @@ module.exports = (function () {
 			invertedPiecesConversion: invert(piecesConversion),
 			validPieces: 'pnbrqkPNBRQK',
 			validCastleChars: 'KQkq',
-			validSideChars: 'wb',
+			validColorChars: 'wb',
 		},
 		flags: {
 			whiteKingCastle: 'wkc',

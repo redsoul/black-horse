@@ -47,7 +47,7 @@ module.exports = class NotationService {
 			}
 		}
 
-		fenStr += configs.fen.validSideChars[board.getSide()] + ' ';
+		fenStr += configs.fen.validColorChars[board.getColor()] + ' ';
 
 		castleFlags = board.getCastleFlags();
 		if (castleFlags[configs.colors.white].kingSide === true) {

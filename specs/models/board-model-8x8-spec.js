@@ -5,7 +5,7 @@ const configs = require('../../src/configurations');
 describe('Board Mode 8x8', function () {
 	let board;
 
-	describe('getPieceByRowColumn function - ', function () {
+	describe('getPiece function - ', function () {
 		beforeEach(function () {
 			BoardService.parseFEN(configs.fen.startingString);
 			board = BoardService.getBoard();
@@ -37,7 +37,7 @@ describe('Board Mode 8x8', function () {
 		});
 
 		test('white promotion', function () {
-			BoardService.parseFEN('8/2P3k1/8/6N1/Pp1rp3/2RP1N2/3Kp3/1r6 b - - 0 1');
+			BoardService.parseFEN('8/2P3k1/8/6N1/Pp1rp3/2RP1N2/3Kp3/1r6 w - - 0 1');
 			board = BoardService.getBoard();
 
 			expect(board.getPawnList(configs.colors.white).count()).toBe(3);

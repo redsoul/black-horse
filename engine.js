@@ -27,7 +27,7 @@ module.exports = (() => {
 		if (isValid) {
 			move.piece = board.getPiece(move.rowOrig, move.columnOrig);
 			move.pieceDest = board.getPiece(move.rowDest, move.columnDest);
-			move.side = board.getPieceColour(move.piece);
+			move.color = board.getPieceColor(move.piece);
 			return move;
 		} else {
 			return false;
@@ -46,7 +46,7 @@ module.exports = (() => {
 		let boardModel;
 		let oppositeKingPosition;
 		let pieceColor;
-		const validMoves = BoardService.generateAllValidMoves(BoardService.getBoard().getSide());
+		const validMoves = BoardService.generateAllValidMoves(BoardService.getBoard().getColor());
 
 		if (typeof move === 'string') {
 			move = NotationService.parseMoveNotation(validMoves, move);
@@ -62,11 +62,11 @@ module.exports = (() => {
 			boardModel = BoardService.getBoard();
 			pieceOrig = boardModel.getPiece(move.rowOrig, move.columnOrig);
 			pieceDest = boardModel.getPiece(move.rowDest, move.columnDest);
-			pieceColor = boardModel.getPieceColour(move.rowOrig, move.columnOrig);
+			pieceColor = boardModel.getPieceColor(move.rowOrig, move.columnOrig);
 			moveFlags = BoardService.makeMove(move);
 
 			if (moveFlags) {
-				BoardService.switchSide();
+				BoardService.switchColor();
 				boardModel = BoardService.getBoard();
 				jsonObj.board = getBoard();
 
@@ -74,17 +74,17 @@ module.exports = (() => {
 				moveFlags.isOppositeKingInCheck = BoardService.isPieceAttacked(oppositeKingPosition[0], oppositeKingPosition[1]);
 				jsonObj.algebraicNotation = NotationService.standartAlgebraicNotation(validMoves, move);
 
-				if (BoardService.isCheckMate(boardModel.getSide())) {
+				if (BoardService.isCheckMate(boardModel.getColor())) {
 					jsonObj.isCheckMate = true;
-					jsonObj.ckeckMateWinSide = boardModel.getSide();
+					jsonObj.ckeckMateWinColor = boardModel.getColor();
 				}
 			}
 		}
 		return jsonObj;
 	}
 
-	function getPieceSide(row, column) {
-		return BoardService.getBoard().getPieceColour(row, column);
+	function getPieceColor(row, column) {
+		return BoardService.getBoard().getPieceColor(row, column);
 	}
 
 	function getPieceValidMoves() {
@@ -104,7 +104,7 @@ module.exports = (() => {
 
 	function searchNextMove(options) {
 		const nextMove = SearchService.searchNextMove(options);
-		const validMoves = BoardService.generateAllValidMoves(BoardService.getBoard().getSide());
+		const validMoves = BoardService.generateAllValidMoves(BoardService.getBoard().getColor());
 		nextMove.algebraicNotation = NotationService.standartAlgebraicNotation(validMoves, nextMove);
 
 		return nextMove;
@@ -119,7 +119,7 @@ module.exports = (() => {
 		isCheckMate: BoardService.isCheckMate.bind(BoardService),
 		searchNextMove,
 		move: makeMove,
-		getPieceSide,
+		getPieceColor,
 		configs,
 	};
 })();

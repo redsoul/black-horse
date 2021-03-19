@@ -20,7 +20,7 @@ describe('BoardService', function () {
 			const fen = '2r3k1/1q1nbppp/r3p3/3pP3/p1pP4/P1Q2N2/1PRN1PPP/2R4K b - - 0 0';
 
 			boardService.parseFEN(fen);
-			expect(boardService.getBoard().getSide()).toBe(configs.colors.black);
+			expect(boardService.getBoard().getColor()).toBe(configs.colors.black);
 			expect(boardService.convertToFEN()).toBe(fen);
 
 			boardService.makeMoveXY(2, 2, 4, 2);
@@ -54,19 +54,19 @@ describe('BoardService', function () {
 			boardService.parseFEN(configs.fen.startingString);
 
 			boardService.makeMoveXY(2, 2, 4, 2);
-			boardService.switchSide();
+			boardService.switchColor();
 			expect(boardService.convertToFEN()).toBe('rnbqkbnr/pppppppp/8/8/1P6/8/P1PPPPPP/RNBQKBNR b KQkq b3 0 1');
 
 			boardService.makeMoveXY(7, 2, 5, 2);
-			boardService.switchSide();
+			boardService.switchColor();
 			expect(boardService.convertToFEN()).toBe('rnbqkbnr/p1pppppp/8/1p6/1P6/8/P1PPPPPP/RNBQKBNR w KQkq b6 0 2');
 
 			boardService.makeMoveXY(2, 3, 4, 3);
-			boardService.switchSide();
+			boardService.switchColor();
 			expect(boardService.convertToFEN()).toBe('rnbqkbnr/p1pppppp/8/1p6/1PP5/8/P2PPPPP/RNBQKBNR b KQkq c3 0 3');
 
 			boardService.makeMoveXY(7, 3, 5, 3);
-			boardService.switchSide();
+			boardService.switchColor();
 			expect(boardService.convertToFEN()).toBe('rnbqkbnr/p2ppppp/8/1pp5/1PP5/8/P2PPPPP/RNBQKBNR w KQkq c6 0 4');
 		});
 
@@ -266,7 +266,7 @@ describe('BoardService', function () {
 					{ kingSide: false, queenSide: false },
 				],
 			});
-			boardService.switchSide();
+			boardService.switchColor();
 			expect(boardService.convertToFEN()).toBe('8/6bb/8/8/R1pP4/4P2k/P7/K7 w - d3 0 1');
 			expect(boardService.makeMoveXY(4, 3, 3, 4, configs.flags.enPassant)).toEqual({
 				enPassant: true,
@@ -275,7 +275,7 @@ describe('BoardService', function () {
 					{ kingSide: false, queenSide: false },
 				],
 			});
-			boardService.switchSide();
+			boardService.switchColor();
 			expect(boardService.convertToFEN()).toBe('8/6bb/8/8/R7/3pP2k/P7/K7 b - - 0 2');
 		});
 
@@ -288,7 +288,7 @@ describe('BoardService', function () {
 					{ kingSide: false, queenSide: false },
 				],
 			});
-			boardService.switchSide();
+			boardService.switchColor();
 			expect(boardService.convertToFEN()).toBe('2r3k1/1q1nbppp/r3p3/3pP3/pPpP4/P1Q2N2/2RN1PPP/2R4K w - b3 0 1');
 			expect(boardService.makeMoveXY(4, 1, 3, 2, configs.flags.enPassant)).toEqual({
 				enPassant: true,
@@ -297,7 +297,7 @@ describe('BoardService', function () {
 					{ kingSide: false, queenSide: false },
 				],
 			});
-			boardService.switchSide();
+			boardService.switchColor();
 			expect(boardService.convertToFEN()).toBe('2r3k1/1q1nbppp/r3p3/3pP3/2pP4/PpQ2N2/2RN1PPP/2R4K b - - 0 2');
 		});
 
@@ -357,7 +357,7 @@ describe('BoardService', function () {
 					{ kingSide: false, queenSide: false },
 				],
 			});
-			boardService.switchSide();
+			boardService.switchColor();
 
 			expect(boardService.getBoard().getPieceList(configs.colors.white).keys()).toEqual([
 				11,
@@ -450,7 +450,7 @@ describe('BoardService', function () {
 					{ kingSide: true, queenSide: false },
 				],
 			});
-			boardService.switchSide();
+			boardService.switchColor();
 
 			expect(boardService.getBoard().getPieceList(configs.colors.white).keys()).toEqual([
 				11,
@@ -503,7 +503,7 @@ describe('BoardService', function () {
 					{ kingSide: false, queenSide: false },
 				],
 			});
-			boardService.switchSide();
+			boardService.switchColor();
 
 			expect(boardService.convertToFEN()).toBe('2r3k1/1q1nbppp/r3p3/3pP3/pPpP4/P1Q2N2/2RN1PPP/2R4K w - b3 0 1');
 			expect(boardService.getBoard().getPieceList(configs.colors.white).keys()).toEqual([13, 18, 23, 24, 26, 27, 28, 31, 33, 36, 42, 44, 55]);
@@ -516,7 +516,7 @@ describe('BoardService', function () {
 					{ kingSide: false, queenSide: false },
 				],
 			});
-			boardService.switchSide();
+			boardService.switchColor();
 			expect(boardService.convertToFEN()).toBe('2r3k1/1q1nbppp/r3p3/3pP3/2pP4/PpQ2N2/2RN1PPP/2R4K b - - 0 2');
 
 			expect(boardService.getBoard().getPieceList(configs.colors.white).keys()).toEqual([13, 18, 23, 24, 26, 27, 28, 31, 33, 36, 44, 55]);

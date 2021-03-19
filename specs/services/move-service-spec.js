@@ -29,10 +29,10 @@ describe('Move Service', function () {
 			let kingPosition;
 			boardService.parseFEN('7k/5p1p/5B2/8/8/8/8/2K3R1 w - - 0 1');
 
-			kingPosition = boardModel.getKingPosition(boardModel.getSide() ^ 1);
+			kingPosition = boardModel.getKingPosition(boardModel.getColor() ^ 1);
 			expect(moveService.isPieceAttacked(boardModel, kingPosition[0], kingPosition[1])).toBe(true);
 
-			kingPosition = boardModel.getKingPosition(boardModel.getSide());
+			kingPosition = boardModel.getKingPosition(boardModel.getColor());
 			expect(moveService.isPieceAttacked(boardModel, kingPosition[0], kingPosition[1])).toBe(false);
 		});
 
@@ -44,10 +44,10 @@ describe('Move Service', function () {
 		test('FEN 4', function () {
 			let kingPosition;
 			boardService.parseFEN('8/6kN/8/6q1/Pp1rp3/2RP1N2/3Kp3/1r6 w - - 0 1');
-			kingPosition = boardModel.getKingPosition(boardModel.getSide());
+			kingPosition = boardModel.getKingPosition(boardModel.getColor());
 			expect(moveService.isPieceAttacked(boardModel, kingPosition[0], kingPosition[1])).toBe(true);
 
-			kingPosition = boardModel.getKingPosition(boardModel.getSide() ^ 1);
+			kingPosition = boardModel.getKingPosition(boardModel.getColor() ^ 1);
 			expect(moveService.isPieceAttacked(boardModel, kingPosition[0], kingPosition[1])).toBe(false);
 
 			expect(moveService.isPieceAttacked(boardModel, 4, 1)).toBe(false);
@@ -122,11 +122,11 @@ describe('Move Service', function () {
 			let kingPosition;
 			boardService.parseFEN('7k/5p1p/5B2/8/8/8/8/2K3R1 w - - 0 1');
 
-			kingPosition = boardModel.getKingPosition(boardModel.getSide() ^ 1);
+			kingPosition = boardModel.getKingPosition(boardModel.getColor() ^ 1);
 			expect(moveService.isSquareAttacked(boardModel, kingPosition[0], kingPosition[1])).toBe(true);
-			expect(moveService.isSquareAttacked(boardModel, kingPosition[0], kingPosition[1] - 1, boardModel.getSide() ^ 1)).toBe(true);
+			expect(moveService.isSquareAttacked(boardModel, kingPosition[0], kingPosition[1] - 1, boardModel.getColor() ^ 1)).toBe(true);
 
-			kingPosition = boardModel.getKingPosition(boardModel.getSide());
+			kingPosition = boardModel.getKingPosition(boardModel.getColor());
 			expect(moveService.isSquareAttacked(boardModel, kingPosition[0], kingPosition[1])).toBe(false);
 
 			expect(moveService.isSquareAttacked(boardModel, 6, 6)).toBe(false);
@@ -319,7 +319,7 @@ describe('Move Service', function () {
 			moveService.setBoardModel(boardService.getBoard());
 
 			boardService.makeMoveXY(2, 4, 4, 4);
-			boardService.switchSide();
+			boardService.switchColor();
 
 			expect(moveService._pawnMoves(4, 3)).toEqual([
 				[3, 3],
@@ -437,16 +437,16 @@ describe('Move Service', function () {
 			}
 
 			if (depth === 1) {
-				return boardService.generateAllValidMoves(boardService.getBoard().getSide()).length;
+				return boardService.generateAllValidMoves(boardService.getBoard().getColor()).length;
 			}
 
-			moves = boardService.generateAllMoves(boardService.getBoard().getSide());
+			moves = boardService.generateAllMoves(boardService.getBoard().getColor());
 			let index;
 			let leafNodes = 0;
 
 			for (index = 0; index < moves.length; ++index) {
 				if (boardService.makeMove(moves[index])) {
-					boardService.switchSide();
+					boardService.switchColor();
 					leafNodes += perft(depth - 1);
 					boardService.rollbackMove();
 				}

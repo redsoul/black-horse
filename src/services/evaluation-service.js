@@ -11,10 +11,10 @@ class EvaluationService {
 		this.pieceService = PieceService;
 	}
 
-	_pawnsScore(board, side) {
+	_pawnsScore(board, color) {
 		let score = 0;
-		const pawnList = board.getPawnList(side);
-		const playSide = side === configs.colors.white ? 1 : -1;
+		const pawnList = board.getPawnList(color);
+		const playColor = color === configs.colors.white ? 1 : -1;
 		let row;
 		let column;
 
@@ -24,9 +24,9 @@ class EvaluationService {
 
 			//isolated or backward pawns
 			if (
-				!pawnList.search(row - playSide + '' + (column - playSide)) &&
-				!pawnList.search(row - playSide + '' + (column + playSide)) &&
-				((row > 2 && side === configs.colors.white) || (row < 7 && side === configs.colors.black))
+				!pawnList.search(row - playColor + '' + (column - playColor)) &&
+				!pawnList.search(row - playColor + '' + (column + playColor)) &&
+				((row > 2 && color === configs.colors.white) || (row < 7 && color === configs.colors.black))
 			) {
 				//                        if (!board.isPieceSecure(row, column)) {
 				score -= this.evaluationModel.isolatedPawnPenalty();
@@ -34,7 +34,7 @@ class EvaluationService {
 			}
 
 			//doubled pawns
-			if (pawnList.search(row - playSide + '' + column)) {
+			if (pawnList.search(row - playColor + '' + column)) {
 				score -= this.evaluationModel.doubledPawnPenalty();
 			}
 		});
@@ -42,14 +42,14 @@ class EvaluationService {
 		return score;
 	}
 
-	_castlingScore(board, side) {
+	_castlingScore(board, color) {
 		let score = 0;
 		let pawnStage;
 		let castlingPenalty;
 		let castlingStage;
 		let castleFlags = board.getCastleFlags();
 
-		if (!castleFlags[side].kingSide || !castleFlags[side].queenSide) {
+		if (!castleFlags[color].kingSide || !castleFlags[color].queenSide) {
 			pawnStage = this.pieceService.pawnStage(board);
 			castlingPenalty = this.evaluationModel.castlingPenalty();
 			castlingStage = round(
@@ -57,11 +57,11 @@ class EvaluationService {
 				2
 			);
 
-			if (!castleFlags[side].kingSide) {
+			if (!castleFlags[color].kingSide) {
 				score -= castlingStage * castlingPenalty;
 			}
 
-			if (!castleFlags[side].queenSide) {
+			if (!castleFlags[color].queenSide) {
 				score -= castlingStage * castlingPenalty;
 			}
 		}
@@ -81,7 +81,7 @@ class EvaluationService {
 		pieceKeys = Object.keys(configs.pieces);
 		for (indexR = 2, piecesLength = pieceKeys.length; indexR < piecesLength; indexR += 1) {
 			piece = configs.pieces[pieceKeys[indexR]];
-			colorsScore[board.getPieceColour(piece)] += round(
+			colorsScore[board.getPieceColor(piece)] += round(
 				board.getPiecesCounter(piece) * this.pieceService.getStartingPieceValue(piece) * this.pieceService.pieceStage(piece, board)
 			);
 		}
@@ -95,15 +95,15 @@ class EvaluationService {
 		let column;
 		let colorsScore;
 		let score = 0;
-		let pieceColour;
+		let pieceColor;
 		let signal;
 		const traverseCallback = (key, value) => {
 			row = value.row;
 			column = value.column;
 			piece = boardModel.getPiece(row, column);
 
-			pieceColour = boardModel.getPieceColour(piece);
-			signal = pieceColour === configs.colors.white ? 1 : -1;
+			pieceColor = boardModel.getPieceColor(piece);
+			signal = pieceColor === configs.colors.white ? 1 : -1;
 
 			score += this.evaluatePiece(boardModel, piece, row, column, colorsScore) * signal;
 		};
@@ -135,8 +135,8 @@ class EvaluationService {
 				currentMove.flag === configs.flags.whiteQueenCastle)
 		) {
 			piece = boardModel.getPiece(currentMove.rowDest, currentMove.columnDest);
-			pieceColour = boardModel.getPieceColour(piece);
-			signal = pieceColour === configs.colors.white ? 1 : -1;
+			pieceColor = boardModel.getPieceColor(piece);
+			signal = pieceColor === configs.colors.white ? 1 : -1;
 
 			score += this.evaluationModel.castlingBonus() * signal;
 		}
@@ -189,14 +189,14 @@ class EvaluationService {
 
 	evaluatePiece(board, pieceOrig, rowDest, columnDest, colorsScore) {
 		let score;
-		let pieceColour;
+		let pieceColor;
 
 		if (!colorsScore && (pieceOrig === configs.pieces.wK || pieceOrig === configs.pieces.bK)) {
 			colorsScore = this._calculateMaterialScore(board);
 		}
 
-		pieceColour = board.getPieceColour(pieceOrig);
-		if (pieceColour === configs.colors.black) {
+		pieceColor = board.getPieceColor(pieceOrig);
+		if (pieceColor === configs.colors.black) {
 			rowDest = 8 - rowDest;
 			columnDest -= 1;
 		} else {
@@ -232,7 +232,7 @@ class EvaluationService {
 
 			case configs.pieces.wK:
 			case configs.pieces.bK:
-				if (colorsScore[pieceColour] <= this.evaluationModel.endGameValue()) {
+				if (colorsScore[pieceColor] <= this.evaluationModel.endGameValue()) {
 					score = this.evaluationModel.kingEndGameScore(rowDest, columnDest);
 				} else {
 					score = this.evaluationModel.kingScore(rowDest, columnDest);
@@ -244,12 +244,12 @@ class EvaluationService {
 
 	evaluateBoard(board, currentMove) {
 		let score;
-		const playSide = board.getSide() === configs.colors.white ? 1 : -1;
+		const playColor = board.getColor() === configs.colors.white ? 1 : -1;
 
 		score = this._evaluateBoard(board, currentMove);
 
 		//fix the negative zero issue
-		return score * playSide + 1 - 1;
+		return score * playColor + 1 - 1;
 	}
 
 	getEvaluatedScoresCount() {

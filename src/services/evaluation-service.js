@@ -7,7 +7,6 @@ const size = require('lodash/size');
 class EvaluationService {
 	constructor() {
 		this.evaluationModel = new EvaluationModel();
-		this.evaluatedScores = {};
 		this.pieceService = PieceService;
 	}
 
@@ -250,10 +249,6 @@ class EvaluationService {
 
 		//fix the negative zero issue
 		return score * playColor + 1 - 1;
-	}
-
-	getEvaluatedScoresCount() {
-		return size(this.evaluatedScores);
 	}
 }
 

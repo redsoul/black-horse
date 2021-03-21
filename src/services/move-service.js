@@ -77,10 +77,8 @@ class MoveService {
 		return moves;
 	}
 
-	_pawnMoves(row, column) {
+	__pawnMoves(piece, color, row, column) {
 		let moves = [];
-		const piece = this.boardModel.getPiece(row, column);
-		const color = this.boardModel.getPieceColor(piece);
 		const dir = color === configs.colors.white ? 1 : -1;
 		let enPassantPosition;
 
@@ -134,10 +132,16 @@ class MoveService {
 		return moves;
 	}
 
-	_knightMoves(row, column) {
+	_pawnMoves(row, column) {
+		const piece = this.boardModel.getPiece(row, column);
+		const color = this.boardModel.getPieceColor(piece);
+
+		return this.__pawnMoves(piece, color, row, column);
+	}
+
+	__knightMoves(color, row, column) {
 		const moves = [];
 		let piece;
-		const color = this.boardModel.getPieceColor(row, column);
 
 		for (let knightAvailableMove of this.knightAvailableMoves) {
 			piece = this.boardModel.getPiece(row + knightAvailableMove[0], column + knightAvailableMove[1]);
@@ -153,9 +157,13 @@ class MoveService {
 		return moves;
 	}
 
-	_bishopMoves(row, column) {
-		const moves = [];
+	_knightMoves(row, column) {
 		const color = this.boardModel.getPieceColor(row, column);
+		return this.__knightMoves(color, row, column);
+	}
+
+	__bishopMoves(color, row, column) {
+		const moves = [];
 		let piece;
 		let indexR;
 		let indexC;
@@ -182,9 +190,13 @@ class MoveService {
 		return moves;
 	}
 
-	_rookMoves(row, column) {
-		const moves = [];
+	_bishopMoves(row, column) {
 		const color = this.boardModel.getPieceColor(row, column);
+		return this.__bishopMoves(color, row, column);
+	}
+
+	__rookMoves(color, row, column) {
+		const moves = [];
 		let piece;
 		let indexR;
 		let indexC;
@@ -211,19 +223,22 @@ class MoveService {
 		return moves;
 	}
 
-	_kingMoves(row, column) {
+	_rookMoves(row, column) {
+		const color = this.boardModel.getPieceColor(row, column);
+		return this.__rookMoves(color, row, column);
+	}
+
+	__kingMoves(color, row, column) {
 		const moves = [];
 		let piece;
 		let flag;
-		const color = this.boardModel.getPieceColor(row, column);
 		let castleFlags;
 
 		for (let kingAvailableMove of this.kingAvailableMoves) {
 			piece = this.boardModel.getPiece(row + kingAvailableMove[0], column + kingAvailableMove[1]);
 			if (
 				piece !== configs.pieces.offBoard &&
-				(color !== this.boardModel.getPieceColor(row + kingAvailableMove[0], column + kingAvailableMove[1]) ||
-					piece === configs.pieces.empty)
+				(color !== this.boardModel.getPieceColor(row + kingAvailableMove[0], column + kingAvailableMove[1]) || piece === configs.pieces.empty)
 			) {
 				moves.push([row + kingAvailableMove[0], column + kingAvailableMove[1]]);
 			}
@@ -264,9 +279,12 @@ class MoveService {
 		return moves;
 	}
 
-	_getPieceMoves(row, column) {
-		const piece = this.boardModel.getPiece(row, column);
-		const color = this.boardModel.getPieceColor(piece);
+	_kingMoves(row, column) {
+		const color = this.boardModel.getPieceColor(row, column);
+		return this.__kingMoves(color, row, column);
+	}
+
+	__getPieceMoves(piece, color, row, column) {
 		let pieceMoves = [];
 		const moves = [];
 		let flag;
@@ -275,27 +293,27 @@ class MoveService {
 		switch (piece) {
 			case configs.pieces.wP:
 			case configs.pieces.bP:
-				pieceMoves = this._pawnMoves(row, column);
+				pieceMoves = this.__pawnMoves(piece, color, row, column);
 				break;
 			case configs.pieces.wN:
 			case configs.pieces.bN:
-				pieceMoves = this._knightMoves(row, column);
+				pieceMoves = this.__knightMoves(color, row, column);
 				break;
 			case configs.pieces.wB:
 			case configs.pieces.bB:
-				pieceMoves = this._bishopMoves(row, column);
+				pieceMoves = this.__bishopMoves(color, row, column);
 				break;
 			case configs.pieces.wR:
 			case configs.pieces.bR:
-				pieceMoves = this._rookMoves(row, column);
+				pieceMoves = this.__rookMoves(color, row, column);
 				break;
 			case configs.pieces.wQ:
 			case configs.pieces.bQ:
-				pieceMoves = this._rookMoves(row, column).concat(this._bishopMoves(row, column));
+				pieceMoves = this.__rookMoves(color, row, column).concat(this.__bishopMoves(color, row, column));
 				break;
 			case configs.pieces.wK:
 			case configs.pieces.bK:
-				pieceMoves = this._kingMoves(row, column);
+				pieceMoves = this.__kingMoves(color, row, column);
 				break;
 		}
 
@@ -321,6 +339,13 @@ class MoveService {
 		return moves;
 	}
 
+	_getPieceMoves(row, column) {
+		const piece = this.boardModel.getPiece(row, column);
+		const color = this.boardModel.getPieceColor(piece);
+
+		return this.__getPieceMoves(piece, color, row, column);
+	}
+
 	_isSquareAttacked(row, column, squareColor = null) {
 		let piece = this.boardModel.getPiece(row, column);
 		let dir;
@@ -332,7 +357,7 @@ class MoveService {
 			return false;
 		}
 
-		color = (piece !== configs.pieces.empty) ? this.boardModel.getPieceColor(row, column) : squareColor;
+		color = piece !== configs.pieces.empty ? this.boardModel.getPieceColor(row, column) : squareColor;
 		if (color === null) {
 			return false;
 		}
@@ -418,14 +443,11 @@ class MoveService {
 
 	_generateAllMoves(color) {
 		const pieceList = this.boardModel.getPieceList(color);
-		let pieceMoves;
 		let moves = [];
 
 		pieceList.traverse((key, value) => {
-			pieceMoves = this._getPieceMoves(value.row, value.column);
-			// if (pieceMoves.length > 0) {
-				moves = moves.concat(pieceMoves);
-			// }
+			const { row, column, piece } = value;
+			moves = moves.concat(this.__getPieceMoves(piece, color, row, column));
 		});
 
 		return orderBy(moves, 'score', 'desc');

@@ -1,4 +1,5 @@
 const times = require('lodash/times');
+const orderBy = require('lodash/orderBy');
 
 class CutoffService {
 	constructor() {
@@ -18,10 +19,13 @@ class CutoffService {
 					move.columnDest === cutOffMove.columnDest
 				) {
 					move.score = score;
-					break;
+					orderBy(moves, 'score', 'desc');
+					return true;
 				}
 			}
 		}
+
+		return false;
 	}
 
 	_getBetaMoves(depth) {
@@ -48,11 +52,11 @@ class CutoffService {
 	}
 
 	promoteBetaMoves(moves, depth) {
-		this._promoteCutOffMoves(moves, this._getBetaMoves(depth), this.betaMovesScore);
+		return this._promoteCutOffMoves(moves, this._getBetaMoves(depth), this.betaMovesScore);
 	}
 
 	promoteAlphaMoves(moves, depth) {
-		this._promoteCutOffMoves(moves, this._getAlphaMoves(depth), this.alphaMovesScore);
+		return this._promoteCutOffMoves(moves, this._getAlphaMoves(depth), this.alphaMovesScore);
 	}
 
 	getAlphaMovesScore() {

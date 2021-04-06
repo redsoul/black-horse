@@ -1,4 +1,5 @@
-const each = require('lodash/each');
+const find = require('lodash/find');
+const pick = require('lodash/pick');
 
 //Principal variation Service, https://chessprogramming.wikispaces.com/Principal+variation
 class PvTableService {
@@ -43,20 +44,16 @@ class PvTableService {
 	promoteLastBestMove(moves, hash) {
 		const pvMove = this.probeTable(hash);
 
-		if (pvMove) {
-			for (let move of moves) {
-				if (
-					move.rowOrig === pvMove.rowOrig &&
-					move.columnOrig === pvMove.columnOrig &&
-					move.rowDest === pvMove.rowDest &&
-					move.columnDest === pvMove.columnDest
-				) {
-					move.score = this.promotedScore;
-					break;
-				}
-			}
+		if (!pvMove) {
+			return false;
+		}
+
+		const res = find(moves, pick(pvMove, ['rowOrig', 'columnOrig', 'rowDest', 'columnDest']));
+		if (res) {
+			res.score = this.promotedScore;
 			return true;
 		}
+
 		return false;
 	}
 

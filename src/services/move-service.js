@@ -460,14 +460,7 @@ class MoveService {
 	init() {
 		this.history = [];
 		this.boardModel = null;
-		this.generatedMoves = {};
-		this.generatedMovesUses = 0;
 		this.MvvLvaService.init();
-	}
-
-	reset() {
-		this.generatedMoves = {};
-		this.generatedMovesUses = 0;
 	}
 
 	getPieceMoves(board, row, column) {
@@ -489,26 +482,6 @@ class MoveService {
 		return this._isSquareAttacked(row, column, color);
 	}
 
-	isPieceSecure(board, row, column) {
-		const boardCopy = cloneDeep(board);
-		const piece = board.getPiece(row, column);
-		if (piece === configs.pieces.empty) {
-			return false;
-		}
-
-		boardCopy.setPiece(row, column, this.getOppositePiece(piece));
-
-		return this.isPieceAttacked(boardCopy, row, column);
-	}
-
-	getOppositePiece(piece) {
-		const color = this.boardModel.getPieceColor(piece);
-		if (color === configs.colors.white) {
-			return piece + 6;
-		}
-		return piece - 6;
-	}
-
 	generateAllMoves(board, color) {
 		this.boardModel = board;
 		return this._generateAllMoves(color);
@@ -526,7 +499,7 @@ class MoveService {
 			captureMoves.push(move);
 		}
 
-		return captureMoves;
+		return orderBy(captureMoves, 'score', 'desc');
 	}
 
 	addToHistory(board, move) {
@@ -557,11 +530,11 @@ class MoveService {
 			}
 		}
 
-		//if (bestIndex !== currentIndex) {
-		temp = movesArr[currentIndex];
-		movesArr[currentIndex] = movesArr[bestIndex];
-		movesArr[bestIndex] = temp;
-		//}
+		if (bestIndex !== currentIndex) {
+			temp = movesArr[currentIndex];
+			movesArr[currentIndex] = movesArr[bestIndex];
+			movesArr[bestIndex] = temp;
+		}
 
 		return movesArr[currentIndex];
 	}

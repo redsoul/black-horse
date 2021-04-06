@@ -585,10 +585,6 @@ class BoardService {
 		return validMoves;
 	}
 
-	resetMoveService() {
-		this.MoveService.reset();
-	}
-
 	printBoard(board) {
 		board = board || this.boardModel.get64Board();
 		NotationService.printBoard(board);

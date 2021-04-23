@@ -1,7 +1,7 @@
 {
   "main": "engine.js",
   "name": "black-horse",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Chess engine built in Javascript using the alpha-beta algorithm",
   "scripts": {
     "test": "jest",

@@ -3,6 +3,11 @@
   "name": "black-horse",
   "version": "0.6.1",
   "description": "Chess engine built in Javascript using the alpha-beta algorithm",
+  "author": "Rui Cardoso",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/redsoul/black-horse/issues"
+  },
   "scripts": {
     "test": "jest",
     "lint": "./node_modules/.bin/eslint specs/* src/* engine.js",

@@ -1,5 +1,4 @@
 const BaseBoardModel = require('./base-board-model.js');
-const ListModel = require('./list-model.js');
 const MapModel = require('./map-model.js');
 const times = require('lodash/times');
 const cloneDeep = require('lodash/cloneDeep');

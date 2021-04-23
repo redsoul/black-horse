@@ -7,3 +7,4 @@ node_modules
 test.js
 src/models/board-model-64.js
 src/models/bst-model.js
+src/models/list-model.js

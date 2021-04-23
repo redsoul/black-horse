@@ -20,11 +20,7 @@ class BoardService {
 	}
 
 	updateBoardHash(hash) {
-		if (!hash) {
-			this.boardModel.setHash(HashService.generateBoardHash(this.boardModel));
-		} else {
-			this.boardModel.setHash(hash);
-		}
+		this.boardModel.setHash(hash || HashService.generateBoardHash(this.boardModel));
 	}
 
 	getBoard() {

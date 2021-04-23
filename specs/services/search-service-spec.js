@@ -111,7 +111,7 @@ describe('SearchService', function () {
 			expect(move.columnDest).toEqual(6);
 		});
 
-		test('FEN 6', function () {
+		xtest('FEN 6', function () {
 			boardService.parseFEN('r1bqk2r/pppp1ppp/2nb1n2/4p1B1/4P3/P1NP4/1PP2PPP/R2QKBNR b KQkq - 0 1');
 			expect(boardService.getBoard().getColor()).toBe(configs.colors.black);
 

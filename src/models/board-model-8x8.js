@@ -1,5 +1,6 @@
 const BaseBoardModel = require('./base-board-model.js');
 const ListModel = require('./list-model.js');
+const MapModel = require('./map-model.js');
 const times = require('lodash/times');
 const cloneDeep = require('lodash/cloneDeep');
 const isUndefined = require('lodash/isUndefined');
@@ -81,12 +82,12 @@ module.exports = class BoardModel extends BaseBoardModel {
 		this.pawnMaterial[configs.colors.white] = 0;
 
 		this.pawnList = [];
-		this.pawnList[configs.colors.black] = new ListModel();
-		this.pawnList[configs.colors.white] = new ListModel();
+		this.pawnList[configs.colors.black] = new MapModel();
+		this.pawnList[configs.colors.white] = new MapModel();
 
 		this.pieceList = [];
-		this.pieceList[configs.colors.black] = new ListModel();
-		this.pieceList[configs.colors.white] = new ListModel();
+		this.pieceList[configs.colors.black] = new MapModel();
+		this.pieceList[configs.colors.white] = new MapModel();
 
 		this.capturedPieces = [];
 		this.capturedPieces[configs.colors.white] = [];
@@ -140,10 +141,10 @@ module.exports = class BoardModel extends BaseBoardModel {
 			this.pieceList[configs.colors.black] = obj.pieceList[configs.colors.black].clone();
 			this.pieceList[configs.colors.white] = obj.pieceList[configs.colors.white].clone();
 		} else {
-			this.pawnList[configs.colors.black] = new ListModel();
-			this.pawnList[configs.colors.white] = new ListModel();
-			this.pieceList[configs.colors.black] = new ListModel();
-			this.pieceList[configs.colors.white] = new ListModel();
+			this.pawnList[configs.colors.black] = new MapModel();
+			this.pawnList[configs.colors.white] = new MapModel();
+			this.pieceList[configs.colors.black] = new MapModel();
+			this.pieceList[configs.colors.white] = new MapModel();
 
 			this.pawnList[configs.colors.black].rebuild(obj.pawnList[configs.colors.black]);
 			this.pawnList[configs.colors.white].rebuild(obj.pawnList[configs.colors.white]);

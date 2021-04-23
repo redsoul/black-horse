@@ -19,13 +19,10 @@ class CutoffService {
 					move.columnDest === cutOffMove.columnDest
 				) {
 					move.score = score;
-					orderBy(moves, 'score', 'desc');
-					return true;
+					break;
 				}
 			}
 		}
-
-		return false;
 	}
 
 	_getBetaMoves(depth) {
@@ -52,11 +49,11 @@ class CutoffService {
 	}
 
 	promoteBetaMoves(moves, depth) {
-		return this._promoteCutOffMoves(moves, this._getBetaMoves(depth), this.betaMovesScore);
+		this._promoteCutOffMoves(moves, this._getBetaMoves(depth), this.betaMovesScore);
 	}
 
 	promoteAlphaMoves(moves, depth) {
-		return this._promoteCutOffMoves(moves, this._getAlphaMoves(depth), this.alphaMovesScore);
+		this._promoteCutOffMoves(moves, this._getAlphaMoves(depth), this.alphaMovesScore);
 	}
 
 	getAlphaMovesScore() {

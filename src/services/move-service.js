@@ -318,7 +318,7 @@ class MoveService {
 		}
 
 		for (let pieceMove of pieceMoves) {
-			flag = typeof pieceMove[2] !== 'undefined' ? pieceMove[2] : null;
+			flag = pieceMove[2] || null;
 			move = {
 				piece,
 				pieceDest: this.boardModel.getPiece(pieceMove[0], pieceMove[1]),

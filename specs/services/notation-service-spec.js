@@ -3,6 +3,14 @@ const MoveService = require('../../src/services/move-service.js');
 const BoardService = require('../../src/services/board-service.js');
 const configs = require('../../src/configurations');
 
+const validateExpectedMoves = function (validMoves, expectedMoves) {
+	expect(expectedMoves.length).toBe(validMoves.length);
+	validMoves.forEach((validMove, index) => {
+		const notation = NotationService.standartAlgebraicNotation(validMoves, validMove);
+		expect(expectedMoves).toContain(notation);
+	});
+};
+
 describe('NotationService', function () {
 	describe('standartAlgebraicNotation function -', function () {
 		test('Algebraic Notation on board initiation', function () {
@@ -31,9 +39,7 @@ describe('NotationService', function () {
 				'g4',
 				'h4',
 			];
-			expectedMoves.forEach((expectedMove, index) => {
-				expect(NotationService.standartAlgebraicNotation(validMoves, validMoves[index])).toBe(expectedMove);
-			});
+			validateExpectedMoves(validMoves, expectedMoves);
 
 			validMoves = MoveService.generateAllMoves(board, configs.colors.black);
 			expectedMoves = [
@@ -58,9 +64,7 @@ describe('NotationService', function () {
 				'g5',
 				'h5',
 			];
-			expectedMoves.forEach((expectedMove, index) => {
-				expect(NotationService.standartAlgebraicNotation(validMoves, validMoves[index])).toBe(expectedMove);
-			});
+			validateExpectedMoves(validMoves, expectedMoves);
 		});
 
 		test('Ambiguous moves #1', function () {
@@ -97,9 +101,7 @@ describe('NotationService', function () {
 				'ka5',
 				'kc5',
 			];
-			expectedMoves.forEach((expectedMove, index) => {
-				expect(NotationService.standartAlgebraicNotation(validMoves, validMoves[index])).toBe(expectedMove);
-			});
+			validateExpectedMoves(validMoves, expectedMoves);
 		});
 
 		test('Ambiguous moves #2', function () {
@@ -129,10 +131,11 @@ describe('NotationService', function () {
 				'Kd2',
 				'Kf2',
 				'f8=Q',
+				'f8=N',
+				'f8=B',
+				'f8=R',
 			];
-			expectedMoves.forEach((expectedMove, index) => {
-				expect(NotationService.standartAlgebraicNotation(validMoves, validMoves[index])).toBe(expectedMove);
-			});
+			validateExpectedMoves(validMoves, expectedMoves);
 		});
 	});
 });

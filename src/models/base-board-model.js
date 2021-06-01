@@ -2,10 +2,10 @@ const configs = require('../configurations');
 const indexOf = require('lodash/indexOf');
 const cloneDeep = require('lodash/cloneDeep');
 const times = require('lodash/times');
-const ListModel = require('./list-model');
+const MapModel = require('./map-model');
 
 module.exports = class BaseBoardModel {
-	constructor() {}
+	constructor() { }
 
 	clone() {
 		return {
@@ -54,10 +54,10 @@ module.exports = class BaseBoardModel {
 			this.pieceList[configs.colors.black] = obj.pieceList[configs.colors.black].clone();
 			this.pieceList[configs.colors.white] = obj.pieceList[configs.colors.white].clone();
 		} else {
-			this.pawnList[configs.colors.black] = new ListModel();
-			this.pawnList[configs.colors.white] = new ListModel();
-			this.pieceList[configs.colors.black] = new ListModel();
-			this.pieceList[configs.colors.white] = new ListModel();
+			this.pawnList[configs.colors.black] = new MapModel();
+			this.pawnList[configs.colors.white] = new MapModel();
+			this.pieceList[configs.colors.black] = new MapModel();
+			this.pieceList[configs.colors.white] = new MapModel();
 
 			this.pawnList[configs.colors.black].rebuild(obj.pawnList[configs.colors.black]);
 			this.pawnList[configs.colors.white].rebuild(obj.pawnList[configs.colors.white]);
